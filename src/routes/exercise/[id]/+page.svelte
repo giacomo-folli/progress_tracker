@@ -4,6 +4,7 @@
 	import { exercises } from "$lib/stores/exercises";
 	import { page } from "$app/state";
 	import type { Exercise } from "$lib/types/exercise";
+	import { resolve } from "$app/paths";
 
 	const id = $state(page.params.id);
 
@@ -99,7 +100,7 @@
 	</div>
 {:else}
 	<div class="page">
-		<nav class="breadcrumb"><a href="/">← Back</a></nav>
+		<nav class="breadcrumb"><a href={resolve("/")}>← Back</a></nav>
 		<p>Exercise not found.</p>
 	</div>
 {/if}
