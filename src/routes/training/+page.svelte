@@ -185,6 +185,7 @@
 		align-items: flex-start;
 		margin-bottom: 1.25rem;
 		gap: 1rem;
+		flex-wrap: wrap;
 	}
 
 	h2 {
@@ -231,21 +232,21 @@
 		transition: background 0.12s;
 	}
 
-	.program-link:hover {
-		background: var(--color-accent-dim);
-	}
-
 	.ex-name {
 		font-size: 0.875rem;
 		font-weight: 600;
 		color: var(--color-text);
 		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		min-width: 0;
 	}
 
 	.ex-step {
 		font-size: 0.8rem;
 		color: var(--color-muted);
 		text-align: right;
+		flex-shrink: 0;
 	}
 
 	/* Log button */
@@ -317,6 +318,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.1rem;
+		min-width: 0;
 	}
 
 	.session-date {
@@ -324,6 +326,9 @@
 		font-weight: 600;
 		color: var(--color-text);
 		text-transform: capitalize;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.session-time {
@@ -413,16 +418,67 @@
 	.sex-name {
 		color: var(--color-muted);
 		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		min-width: 0;
 	}
 
 	.sex-step {
 		color: var(--color-text);
 		text-align: right;
 		font-size: 0.75rem;
+		flex-shrink: 0;
 	}
 
 	.hidden {
 		display: none;
 		margin-bottom: 0 !important;
+	}
+
+	/* --- Mobile Responsiveness --- */
+	@media (max-width: 768px) {
+		.training-layout {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
+		}
+
+		.col-header {
+			gap: 0.75rem;
+		}
+
+		.program-link {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.3rem;
+			padding: 0.8rem 1rem;
+		}
+
+		.ex-name,
+		.sex-name {
+			white-space: normal; /* Let text wrap naturally on smaller screens */
+			word-wrap: break-word;
+		}
+
+		.ex-step,
+		.sex-step {
+			text-align: left;
+			font-size: 0.75rem;
+		}
+
+		.session-card {
+			padding: 0.8rem 1rem;
+		}
+
+		.session-ex {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.2rem;
+			padding: 0.5rem 0;
+		}
+
+		.confirm-row {
+			flex-direction: column;
+			gap: 0.2rem;
+		}
 	}
 </style>
