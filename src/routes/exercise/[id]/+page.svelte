@@ -51,7 +51,7 @@
 {#if exercise}
 	<div class="page">
 		<nav class="breadcrumb">
-			<a href={resolve("/")}>← Back</a>
+			<a href={resolve("/exercises")}>← Back</a>
 		</nav>
 
 		<header class="ex-header">
@@ -100,20 +100,14 @@
 	</div>
 {:else}
 	<div class="page">
-		<nav class="breadcrumb"><a href={resolve("/")}>← Back</a></nav>
+		<nav class="breadcrumb"><a href={resolve("/exercises")}>← Back</a></nav>
 		<p>Exercise not found.</p>
 	</div>
 {/if}
 
 <style>
-	.page {
-		max-width: 860px;
-		margin: 0 auto;
-		padding: 2.5rem 1.5rem 4rem;
-	}
-
 	.breadcrumb {
-		margin-bottom: 2rem;
+		margin-bottom: 0.5rem;
 	}
 
 	.breadcrumb a {
@@ -233,12 +227,12 @@
 	}
 
 	.btn-undo {
-		background: none;
+		background: rgba(100, 100, 100, 0.2);
 		border: 1px solid var(--color-border);
 		border-radius: 6px;
 		padding: 0.3rem 0.7rem;
 		font-size: 0.75rem;
-		color: var(--color-muted);
+		color: var(--color-text);
 		cursor: pointer;
 		transition:
 			border-color 0.1s,

@@ -84,7 +84,7 @@
 			{#each program as item (item.exerciseId)}
 				<li class="program-item">
 					<a
-						href={resolve(`/exercise/{item.exerciseId}`)}
+						href={resolve(`/exercise/${item.exerciseId}`)}
 						class="program-link"
 					>
 						<span class="ex-name">{item.exerciseName}</span>

@@ -2,15 +2,17 @@
     import { resolve } from "$app/paths";
     import { page } from "$app/state";
 
-    const isTraining = $derived(page.url.pathname === "/training");
-    const isHome = $derived(page.url.pathname === "/");
+    const isTraining = $derived(page.url.pathname.includes("/training"));
+    const isHome = $derived(!isTraining);
 </script>
 
 <nav class="tab-nav">
     <a href={resolve("/training")} class="tab" class:active={isTraining}
         >Allenamento</a
     >
-    <a href={resolve("/")} class="tab" class:active={isHome}>Progressioni</a>
+    <a href={resolve("/exercises")} class="tab" class:active={isHome}
+        >Esercizi</a
+    >
 </nav>
 
 <style>
