@@ -17,11 +17,11 @@
 </svelte:head>
 
 <div class="page">
-	<header class="site-header">
+	<!-- <header class="site-header">
 		<div class="header-inner">
 			<h1>Progressioni</h1>
 		</div>
-	</header>
+	</header> -->
 
 	<main>
 		<StatsRow />
@@ -66,17 +66,6 @@
 		font-weight: 700;
 		letter-spacing: -0.03em;
 		color: var(--color-text);
-	}
-
-	.overall-pct {
-		font-size: 0.85rem;
-		color: var(--color-muted);
-	}
-
-	.subtitle {
-		margin: 0.3rem 0 0;
-		font-size: 0.85rem;
-		color: var(--color-muted);
 	}
 
 	.grid {

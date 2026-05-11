@@ -107,9 +107,9 @@
 
 <style>
 	.page {
-		max-width: 560px;
+		max-width: 860px;
 		margin: 0 auto;
-		padding: 2rem 1.5rem 4rem;
+		padding: 2.5rem 1.5rem 4rem;
 	}
 
 	.breadcrumb {
