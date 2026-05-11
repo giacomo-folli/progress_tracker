@@ -12,3 +12,15 @@ export interface Exercise {
 	steps: Step[];
 	currentStepIndex: number;
 }
+
+export interface SessionExercise {
+	exerciseId: string;
+	exerciseName: string;
+	stepLabel: string;
+}
+
+export interface TrainingSession {
+	id: string;
+	completedAt: string;
+	exercises: SessionExercise[];
+}

@@ -1,6 +1,7 @@
-import type { Exercise } from '../types/exercise';
+import type { Exercise, TrainingSession } from '../types/exercise';
 
 const STORAGE_KEY = 'progression-tracker-v1';
+const SESSIONS_KEY = 'progression-tracker-sessions-v1';
 
 export function loadFromStorage(): Exercise[] | null {
 	if (typeof localStorage === 'undefined') return null;
@@ -25,4 +26,24 @@ export function saveToStorage(exercises: Exercise[]): void {
 export function clearStorage(): void {
 	if (typeof localStorage === 'undefined') return;
 	localStorage.removeItem(STORAGE_KEY);
+}
+
+export function loadSessions(): TrainingSession[] | null {
+	if (typeof localStorage === 'undefined') return null;
+	try {
+		const raw = localStorage.getItem(SESSIONS_KEY);
+		if (!raw) return null;
+		return JSON.parse(raw) as TrainingSession[];
+	} catch {
+		return null;
+	}
+}
+
+export function saveSessions(sessions: TrainingSession[]): void {
+	if (typeof localStorage === 'undefined') return;
+	try {
+		localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
+	} catch {
+		// ignore
+	}
 }

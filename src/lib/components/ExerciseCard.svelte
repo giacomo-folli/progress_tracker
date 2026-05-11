@@ -37,12 +37,12 @@
 		{:else}
 			<p class="step-label">
 				<span class="step-meta">Now</span>
-				{current?.label ?? "—"}
+				<span class="step-value"> {current?.label ?? "—"}</span>
 			</p>
 			{#if next}
 				<p class="step-label next">
 					<span class="step-meta">Next</span>
-					{next.label}
+					<span class="step-value"> {next.label} </span>
 				</p>
 			{/if}
 		{/if}
@@ -111,6 +111,14 @@
 		display: flex;
 		gap: 0.5rem;
 		align-items: baseline;
+	}
+
+	.step-value {
+		text-overflow: ellipsis;
+
+		/* Needed to make it work */
+		overflow: hidden;
+		white-space: nowrap;
 	}
 
 	.step-label.next {

@@ -1,7 +1,20 @@
 <script lang="ts">
-	import '../app.css';
-	import type { Snippet } from 'svelte';
-	let { children }: { children: Snippet } = $props();
+	import "../app.css";
+	import Nav from "$lib/components/Nav.svelte";
+
+	let { children } = $props();
 </script>
 
-{@render children()}
+<div class="shell">
+	<Nav />
+	{@render children()}
+</div>
+
+<style>
+	.shell {
+		max-width: 960px;
+		margin: 0 auto;
+		/* padding: 2rem 1.5rem 4rem; */
+		padding: 1.5rem;
+	}
+</style>
