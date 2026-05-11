@@ -114,7 +114,6 @@ declare module '$env/static/private' {
 	export const XDG_VTNR: string;
 	export const XDG_SESSION_ID: string;
 	export const MANAGERPIDFDID: string;
-	export const npm_config_user_agent: string;
 	export const PNPM_SCRIPT_SRC_DIR: string;
 	export const XDG_STATE_HOME: string;
 	export const npm_execpath: string;
@@ -139,7 +138,6 @@ declare module '$env/static/private' {
 	export const npm_node_execpath: string;
 	export const HYPRCURSOR_SIZE: string;
 	export const TERM_PROGRAM: string;
-	export const NODE_ENV: string;
 }
 
 /**
@@ -302,7 +300,6 @@ declare module '$env/dynamic/private' {
 		XDG_VTNR: string;
 		XDG_SESSION_ID: string;
 		MANAGERPIDFDID: string;
-		npm_config_user_agent: string;
 		PNPM_SCRIPT_SRC_DIR: string;
 		XDG_STATE_HOME: string;
 		npm_execpath: string;
@@ -327,7 +324,6 @@ declare module '$env/dynamic/private' {
 		npm_node_execpath: string;
 		HYPRCURSOR_SIZE: string;
 		TERM_PROGRAM: string;
-		NODE_ENV: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}
