@@ -12,7 +12,7 @@ const config = {
 			strict: false
 		}),
 		paths: {
-			base: dev ? '' : '/progress_tracker'
+			base: dev ? '' : '/prossima'
 		},
 		alias: {
 			$lib: './src/lib'
