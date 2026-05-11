@@ -1,4 +1,4 @@
-//#region node_modules/@sveltejs/kit/src/utils/array.js
+//#region node_modules/.pnpm/@sveltejs+kit@2.59.1_@sveltejs+vite-plugin-svelte@7.1.2_svelte@5.55.5_vite@8.0.11__svel_3364b2e3a68b58d9d725bef73d04135c/node_modules/@sveltejs/kit/src/utils/array.js
 /**
 * Removes nullish values from an array.
 *
@@ -12,7 +12,7 @@ function compact(arr) {
 	);
 }
 //#endregion
-//#region node_modules/@sveltejs/kit/src/runtime/pathname.js
+//#region node_modules/.pnpm/@sveltejs+kit@2.59.1_@sveltejs+vite-plugin-svelte@7.1.2_svelte@5.55.5_vite@8.0.11__svel_3364b2e3a68b58d9d725bef73d04135c/node_modules/@sveltejs/kit/src/runtime/pathname.js
 var DATA_SUFFIX = "/__data.json";
 var HTML_DATA_SUFFIX = ".html__data.json";
 /** @param {string} pathname */
@@ -53,7 +53,7 @@ function strip_resolution_suffix(pathname) {
 	return pathname.slice(0, -11);
 }
 //#endregion
-//#region node_modules/@sveltejs/kit/src/runtime/telemetry/noop.js
+//#region node_modules/.pnpm/@sveltejs+kit@2.59.1_@sveltejs+vite-plugin-svelte@7.1.2_svelte@5.55.5_vite@8.0.11__svel_3364b2e3a68b58d9d725bef73d04135c/node_modules/@sveltejs/kit/src/runtime/telemetry/noop.js
 /**
 * @type {Span}
 */
@@ -101,7 +101,7 @@ var noop_span_context = {
 	traceFlags: 0
 };
 //#endregion
-//#region node_modules/@sveltejs/kit/src/utils/url.js
+//#region node_modules/.pnpm/@sveltejs+kit@2.59.1_@sveltejs+vite-plugin-svelte@7.1.2_svelte@5.55.5_vite@8.0.11__svel_3364b2e3a68b58d9d725bef73d04135c/node_modules/@sveltejs/kit/src/utils/url.js
 /**
 * Matches a URI scheme. See https://www.rfc-editor.org/rfc/rfc3986#section-3.1
 * @type {RegExp}
@@ -220,7 +220,7 @@ function allow_nodejs_console_log(url) {
 	};
 }
 //#endregion
-//#region node_modules/@sveltejs/kit/src/utils/hash.js
+//#region node_modules/.pnpm/@sveltejs+kit@2.59.1_@sveltejs+vite-plugin-svelte@7.1.2_svelte@5.55.5_vite@8.0.11__svel_3364b2e3a68b58d9d725bef73d04135c/node_modules/@sveltejs/kit/src/utils/hash.js
 /**
 * Hash using djb2
 * @param {import('types').StrictBody[]} values
@@ -238,7 +238,7 @@ function hash(...values) {
 	return (hash >>> 0).toString(36);
 }
 //#endregion
-//#region node_modules/@sveltejs/kit/src/utils/routing.js
+//#region node_modules/.pnpm/@sveltejs+kit@2.59.1_@sveltejs+vite-plugin-svelte@7.1.2_svelte@5.55.5_vite@8.0.11__svel_3364b2e3a68b58d9d725bef73d04135c/node_modules/@sveltejs/kit/src/utils/routing.js
 /**
 * @param {RegExpMatchArray} match
 * @param {import('types').RouteParam[]} params
@@ -297,7 +297,7 @@ function find_route(path, routes, matchers) {
 	return null;
 }
 //#endregion
-//#region node_modules/@sveltejs/kit/src/utils/exports.js
+//#region node_modules/.pnpm/@sveltejs+kit@2.59.1_@sveltejs+vite-plugin-svelte@7.1.2_svelte@5.55.5_vite@8.0.11__svel_3364b2e3a68b58d9d725bef73d04135c/node_modules/@sveltejs/kit/src/utils/exports.js
 /**
 * @param {Set<string>} expected
 */

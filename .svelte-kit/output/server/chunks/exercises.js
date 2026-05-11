@@ -149,14 +149,14 @@ function createExercisesStore() {
 		subscribe,
 		completeCurrentStep(exerciseId) {
 			update((exercises) => {
-				const ex = exercises.find((e) => e.id === exerciseId);
-				if (!ex) return exercises;
-				const step = ex.steps[ex.currentStepIndex];
+				const exercise = exercises.find((e) => e.id === exerciseId);
+				if (!exercise) return exercises;
+				const step = exercise.steps[exercise.currentStepIndex];
 				if (!step || step.completed) return exercises;
 				step.completed = true;
 				step.completedAt = (/* @__PURE__ */ new Date()).toISOString();
-				const nextIndex = ex.currentStepIndex + 1;
-				if (nextIndex < ex.steps.length) ex.currentStepIndex = nextIndex;
+				const nextIndex = exercise.currentStepIndex + 1;
+				if (nextIndex < exercise.steps.length) exercise.currentStepIndex = nextIndex;
 				persist(exercises);
 				return exercises;
 			});

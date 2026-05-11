@@ -1,37 +1,6 @@
-import "../../../../chunks/environment.js";
-import { H as escape_html, a as ensure_array_like, c as store_get, i as derived, l as stringify, n as attr_class, o as head, tt as getContext, u as unsubscribe_stores } from "../../../../chunks/dev.js";
-import "../../../../chunks/client.js";
+import { H as escape_html, a as ensure_array_like, c as store_get, i as derived, l as stringify, n as attr_class, o as head, u as unsubscribe_stores } from "../../../../chunks/dev.js";
+import { t as page } from "../../../../chunks/state.js";
 import { n as exercises, r as ProgressBar } from "../../../../chunks/exercises.js";
-//#region node_modules/@sveltejs/kit/src/runtime/app/stores.js
-/**
-* A function that returns all of the contextual stores. On the server, this must be called during component initialization.
-* Only use this if you need to defer store subscription until after the component has mounted, for some reason.
-*
-* @deprecated Use `$app/state` instead (requires Svelte 5, [see docs for more info](https://svelte.dev/docs/kit/migrating-to-sveltekit-2#SvelteKit-2.12:-$app-stores-deprecated))
-*/
-var getStores = () => {
-	const stores$1 = getContext("__svelte__");
-	return {
-		/** @type {typeof page} */
-		page: { subscribe: stores$1.page.subscribe },
-		/** @type {typeof navigating} */
-		navigating: { subscribe: stores$1.navigating.subscribe },
-		/** @type {typeof updated} */
-		updated: stores$1.updated
-	};
-};
-/**
-* A readable store whose value contains page data.
-*
-* On the server, this store can only be subscribed to during component initialization. In the browser, it can be subscribed to at any time.
-*
-* @deprecated Use `page` from `$app/state` instead (requires Svelte 5, [see docs for more info](https://svelte.dev/docs/kit/migrating-to-sveltekit-2#SvelteKit-2.12:-$app-stores-deprecated))
-* @type {import('svelte/store').Readable<import('@sveltejs/kit').Page>}
-*/
-var page = { subscribe(fn) {
-	return getStores().page.subscribe(fn);
-} };
-//#endregion
 //#region src/lib/components/StepList.svelte
 function StepList($$renderer, $$props) {
 	$$renderer.component(($$renderer) => {
@@ -70,22 +39,25 @@ function StepList($$renderer, $$props) {
 function _page($$renderer, $$props) {
 	$$renderer.component(($$renderer) => {
 		var $$store_subs;
-		const id = derived(() => store_get($$store_subs ??= {}, "$page", page).params.id);
-		const ex = derived(() => store_get($$store_subs ??= {}, "$exercises", exercises).find((e) => e.id === id()));
-		const completedCount = derived(() => ex()?.steps.filter((s) => s.completed).length ?? 0);
-		const total = derived(() => ex()?.steps.length ?? 0);
-		const pct = derived(() => total() === 0 ? 0 : Math.round(completedCount() / total() * 100));
-		const isComplete = derived(() => completedCount() === total());
-		const currentStep = derived(() => ex()?.steps[ex().currentStepIndex] ?? null);
-		const hasCompleted = derived(() => (ex()?.steps ?? []).some((s) => s.completed));
+		const id = page.params.id;
+		let exercise = store_get($$store_subs ??= {}, "$exercises", exercises).find((e) => e.id === id);
+		exercises.subscribe((r) => {
+			exercise = r.find((e) => e.id === id);
+		});
+		let completedCount = derived(() => exercise?.steps.filter((s) => s.completed).length ?? 0);
+		let total = derived(() => exercise?.steps.length ?? 0);
+		let isComplete = derived(() => completedCount() === total());
+		let pct = derived(() => total() === 0 ? 0 : Math.round(completedCount() / total() * 100));
+		let currentStep = derived(() => exercise?.steps[exercise.currentStepIndex] ?? null);
+		let hasCompleted = derived(() => (exercise?.steps ?? []).some((s) => s.completed));
 		head("1ofnayf", $$renderer, ($$renderer) => {
 			$$renderer.title(($$renderer) => {
-				$$renderer.push(`<title>${escape_html(ex()?.name ?? "Exercise")} — Progressioni</title>`);
+				$$renderer.push(`<title>${escape_html(exercise?.name ?? "Exercise")} — Progressioni</title>`);
 			});
 		});
-		if (ex()) {
+		if (exercise) {
 			$$renderer.push("<!--[0-->");
-			$$renderer.push(`<div class="page svelte-1ofnayf"><nav class="breadcrumb svelte-1ofnayf"><a href="/" class="svelte-1ofnayf">← Back</a></nav> <header class="ex-header svelte-1ofnayf"><h1 class="svelte-1ofnayf">${escape_html(ex().name)}</h1> <div class="progress-row svelte-1ofnayf">`);
+			$$renderer.push(`<div class="page svelte-1ofnayf"><nav class="breadcrumb svelte-1ofnayf"><a href="/" class="svelte-1ofnayf">← Back</a></nav> <header class="ex-header svelte-1ofnayf"><h1 class="svelte-1ofnayf">${escape_html(exercise.name)}</h1> <div class="progress-row svelte-1ofnayf">`);
 			ProgressBar($$renderer, { pct: pct() });
 			$$renderer.push(`<!----> <span class="pct-label svelte-1ofnayf">${escape_html(pct())}%</span></div> <p class="step-count svelte-1ofnayf">${escape_html(completedCount())} of ${escape_html(total())} steps completed</p></header> `);
 			if (!isComplete()) {
@@ -102,8 +74,8 @@ function _page($$renderer, $$props) {
 			} else $$renderer.push("<!--[-1-->");
 			$$renderer.push(`<!--]--></div> `);
 			StepList($$renderer, {
-				steps: ex().steps,
-				currentStepIndex: ex().currentStepIndex
+				steps: exercise.steps,
+				currentStepIndex: exercise.currentStepIndex
 			});
 			$$renderer.push(`<!----></section></div>`);
 		} else {

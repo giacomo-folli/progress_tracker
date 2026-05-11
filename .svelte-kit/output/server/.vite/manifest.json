@@ -9,18 +9,6 @@
       "_internal.js"
     ]
   },
-  "_client.js": {
-    "file": "chunks/client.js",
-    "name": "client",
-    "imports": [
-      "_environment.js",
-      "_internal.js",
-      "_exports.js",
-      "_shared.js",
-      "_dev.js",
-      "_index-server.js"
-    ]
-  },
   "_dev.js": {
     "file": "chunks/dev.js",
     "name": "dev"
@@ -70,7 +58,20 @@
     "file": "chunks/shared.js",
     "name": "shared",
     "imports": [
-      "_environment.js"
+      "_environment.js",
+      "_dev.js"
+    ]
+  },
+  "_state.js": {
+    "file": "chunks/state.js",
+    "name": "state",
+    "imports": [
+      "_environment.js",
+      "_internal.js",
+      "_exports.js",
+      "_shared.js",
+      "_dev.js",
+      "_index-server.js"
     ]
   },
   "_utils.js": {
@@ -81,10 +82,10 @@
       "_shared.js"
     ]
   },
-  "node_modules/@sveltejs/kit/src/runtime/app/server/remote/index.js": {
+  "node_modules/.pnpm/@sveltejs+kit@2.59.1_@sveltejs+vite-plugin-svelte@7.1.2_svelte@5.55.5_vite@8.0.11__svel_3364b2e3a68b58d9d725bef73d04135c/node_modules/@sveltejs/kit/src/runtime/app/server/remote/index.js": {
     "file": "remote-entry.js",
     "name": "remote-entry",
-    "src": "node_modules/@sveltejs/kit/src/runtime/app/server/remote/index.js",
+    "src": "node_modules/.pnpm/@sveltejs+kit@2.59.1_@sveltejs+vite-plugin-svelte@7.1.2_svelte@5.55.5_vite@8.0.11__svel_3364b2e3a68b58d9d725bef73d04135c/node_modules/@sveltejs/kit/src/runtime/app/server/remote/index.js",
     "isEntry": true,
     "imports": [
       "_environment.js",
@@ -92,21 +93,20 @@
       "_shared.js"
     ]
   },
-  "node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte": {
+  "node_modules/.pnpm/@sveltejs+kit@2.59.1_@sveltejs+vite-plugin-svelte@7.1.2_svelte@5.55.5_vite@8.0.11__svel_3364b2e3a68b58d9d725bef73d04135c/node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte": {
     "file": "entries/fallbacks/error.svelte.js",
     "name": "entries/fallbacks/error.svelte",
-    "src": "node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte",
+    "src": "node_modules/.pnpm/@sveltejs+kit@2.59.1_@sveltejs+vite-plugin-svelte@7.1.2_svelte@5.55.5_vite@8.0.11__svel_3364b2e3a68b58d9d725bef73d04135c/node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte",
     "isEntry": true,
     "imports": [
-      "_environment.js",
-      "_client.js",
+      "_state.js",
       "_dev.js"
     ]
   },
-  "node_modules/@sveltejs/kit/src/runtime/server/index.js": {
+  "node_modules/.pnpm/@sveltejs+kit@2.59.1_@sveltejs+vite-plugin-svelte@7.1.2_svelte@5.55.5_vite@8.0.11__svel_3364b2e3a68b58d9d725bef73d04135c/node_modules/@sveltejs/kit/src/runtime/server/index.js": {
     "file": "index.js",
     "name": "index",
-    "src": "node_modules/@sveltejs/kit/src/runtime/server/index.js",
+    "src": "node_modules/.pnpm/@sveltejs+kit@2.59.1_@sveltejs+vite-plugin-svelte@7.1.2_svelte@5.55.5_vite@8.0.11__svel_3364b2e3a68b58d9d725bef73d04135c/node_modules/@sveltejs/kit/src/runtime/server/index.js",
     "isEntry": true,
     "imports": [
       "_environment.js",
@@ -149,8 +149,7 @@
     "src": "src/routes/exercise/[id]/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_environment.js",
-      "_client.js",
+      "_state.js",
       "_dev.js",
       "_exercises.js"
     ],

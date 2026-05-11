@@ -40,11 +40,9 @@
 declare module '$env/static/private' {
 	export const SHELL: string;
 	export const npm_command: string;
-	export const npm_config_userconfig: string;
 	export const COLORTERM: string;
 	export const HYPRLAND_CMD: string;
 	export const XDG_CONFIG_DIRS: string;
-	export const npm_config_cache: string;
 	export const XDG_SESSION_PATH: string;
 	export const XDG_MENU_PREFIX: string;
 	export const TERM_PROGRAM_VERSION: string;
@@ -56,12 +54,9 @@ declare module '$env/static/private' {
 	export const XDG_CONFIG_HOME: string;
 	export const OMARCHY_PATH: string;
 	export const MEMORY_PRESSURE_WRITE: string;
-	export const COLOR: string;
-	export const npm_config_local_prefix: string;
 	export const XMODIFIERS: string;
 	export const DESKTOP_SESSION: string;
 	export const NO_AT_BRIDGE: string;
-	export const npm_config_globalconfig: string;
 	export const XCURSOR_SIZE: string;
 	export const EDITOR: string;
 	export const XDG_SEAT: string;
@@ -69,7 +64,6 @@ declare module '$env/static/private' {
 	export const XDG_SESSION_DESKTOP: string;
 	export const LOGNAME: string;
 	export const XDG_SESSION_TYPE: string;
-	export const npm_config_init_module: string;
 	export const SYSTEMD_EXEC_PID: string;
 	export const VSCODE_GIT_ASKPASS_NODE: string;
 	export const TERMINAL: string;
@@ -88,6 +82,7 @@ declare module '$env/static/private' {
 	export const GIT_ASKPASS: string;
 	export const XDG_SEAT_PATH: string;
 	export const INVOCATION_ID: string;
+	export const pnpm_config_verify_deps_before_run: string;
 	export const MANAGERPID: string;
 	export const BAT_THEME: string;
 	export const INIT_CWD: string;
@@ -101,11 +96,9 @@ declare module '$env/static/private' {
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 	export const VSCODE_PYTHON_AUTOACTIVATE_GUARD: string;
 	export const SDL_IM_MODULE: string;
-	export const npm_config_npm_version: string;
 	export const XDG_SESSION_CLASS: string;
 	export const TERM: string;
 	export const npm_package_name: string;
-	export const npm_config_prefix: string;
 	export const USER: string;
 	export const SUDO_EDITOR: string;
 	export const VSCODE_GIT_IPC_HANDLE: string;
@@ -122,10 +115,12 @@ declare module '$env/static/private' {
 	export const XDG_SESSION_ID: string;
 	export const MANAGERPIDFDID: string;
 	export const npm_config_user_agent: string;
+	export const PNPM_SCRIPT_SRC_DIR: string;
 	export const XDG_STATE_HOME: string;
 	export const npm_execpath: string;
 	export const FC_FONTATIONS: string;
 	export const XDG_RUNTIME_DIR: string;
+	export const NODE_PATH: string;
 	export const DEBUGINFOD_URLS: string;
 	export const npm_package_json: string;
 	export const BUN_INSTALL: string;
@@ -134,19 +129,16 @@ declare module '$env/static/private' {
 	export const MISE_SHELL: string;
 	export const XDG_DATA_DIRS: string;
 	export const GDK_BACKEND: string;
-	export const npm_config_noproxy: string;
 	export const BROWSER: string;
 	export const PATH: string;
 	export const GDK_SCALE: string;
 	export const npm_config_node_gyp: string;
 	export const DBUS_SESSION_BUS_ADDRESS: string;
-	export const npm_config_global_prefix: string;
 	export const MAIL: string;
 	export const UWSM_FINALIZE_VARNAMES: string;
 	export const npm_node_execpath: string;
 	export const HYPRCURSOR_SIZE: string;
 	export const TERM_PROGRAM: string;
-	export const _: string;
 	export const NODE_ENV: string;
 }
 
@@ -236,11 +228,9 @@ declare module '$env/dynamic/private' {
 	export const env: {
 		SHELL: string;
 		npm_command: string;
-		npm_config_userconfig: string;
 		COLORTERM: string;
 		HYPRLAND_CMD: string;
 		XDG_CONFIG_DIRS: string;
-		npm_config_cache: string;
 		XDG_SESSION_PATH: string;
 		XDG_MENU_PREFIX: string;
 		TERM_PROGRAM_VERSION: string;
@@ -252,12 +242,9 @@ declare module '$env/dynamic/private' {
 		XDG_CONFIG_HOME: string;
 		OMARCHY_PATH: string;
 		MEMORY_PRESSURE_WRITE: string;
-		COLOR: string;
-		npm_config_local_prefix: string;
 		XMODIFIERS: string;
 		DESKTOP_SESSION: string;
 		NO_AT_BRIDGE: string;
-		npm_config_globalconfig: string;
 		XCURSOR_SIZE: string;
 		EDITOR: string;
 		XDG_SEAT: string;
@@ -265,7 +252,6 @@ declare module '$env/dynamic/private' {
 		XDG_SESSION_DESKTOP: string;
 		LOGNAME: string;
 		XDG_SESSION_TYPE: string;
-		npm_config_init_module: string;
 		SYSTEMD_EXEC_PID: string;
 		VSCODE_GIT_ASKPASS_NODE: string;
 		TERMINAL: string;
@@ -284,6 +270,7 @@ declare module '$env/dynamic/private' {
 		GIT_ASKPASS: string;
 		XDG_SEAT_PATH: string;
 		INVOCATION_ID: string;
+		pnpm_config_verify_deps_before_run: string;
 		MANAGERPID: string;
 		BAT_THEME: string;
 		INIT_CWD: string;
@@ -297,11 +284,9 @@ declare module '$env/dynamic/private' {
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 		VSCODE_PYTHON_AUTOACTIVATE_GUARD: string;
 		SDL_IM_MODULE: string;
-		npm_config_npm_version: string;
 		XDG_SESSION_CLASS: string;
 		TERM: string;
 		npm_package_name: string;
-		npm_config_prefix: string;
 		USER: string;
 		SUDO_EDITOR: string;
 		VSCODE_GIT_IPC_HANDLE: string;
@@ -318,10 +303,12 @@ declare module '$env/dynamic/private' {
 		XDG_SESSION_ID: string;
 		MANAGERPIDFDID: string;
 		npm_config_user_agent: string;
+		PNPM_SCRIPT_SRC_DIR: string;
 		XDG_STATE_HOME: string;
 		npm_execpath: string;
 		FC_FONTATIONS: string;
 		XDG_RUNTIME_DIR: string;
+		NODE_PATH: string;
 		DEBUGINFOD_URLS: string;
 		npm_package_json: string;
 		BUN_INSTALL: string;
@@ -330,19 +317,16 @@ declare module '$env/dynamic/private' {
 		MISE_SHELL: string;
 		XDG_DATA_DIRS: string;
 		GDK_BACKEND: string;
-		npm_config_noproxy: string;
 		BROWSER: string;
 		PATH: string;
 		GDK_SCALE: string;
 		npm_config_node_gyp: string;
 		DBUS_SESSION_BUS_ADDRESS: string;
-		npm_config_global_prefix: string;
 		MAIL: string;
 		UWSM_FINALIZE_VARNAMES: string;
 		npm_node_execpath: string;
 		HYPRCURSOR_SIZE: string;
 		TERM_PROGRAM: string;
-		_: string;
 		NODE_ENV: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
