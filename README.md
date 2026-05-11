@@ -53,15 +53,14 @@ Because the app is deployed under a GitHub Pages subpath, internal routes use Sv
 
 Planned improvements for the project:
 
-- [x] Local persistence with localStorage
 - [ ] Import/export progress data to `training_plan.yaml` 
+- [ ] Add support for PWA on mobile
 - [ ] Dashboard and statistics
-  -  [ ] Weekly and monthly progress summaries
-- [ ] Better mobile layout
+- [ ] Weekly and monthly progress summaries
 - [ ] Custom exercise creation
 - [ ] Weekly schedule
-- [ ] Authentication and profile
 - [ ] Offline support
+- [ ] Authentication and profile
 - [ ] Workout routines and grouped sessions
 
 ## License
