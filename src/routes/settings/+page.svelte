@@ -58,15 +58,16 @@
 </script>
 
 <div class="settings-container">
-	<div>
+	<div class="upload-zone">
 		<div class="upload-file-section">
 			<div>Carica un file custom (formato .yaml)</div>
-			<button class="btn-upload-file" onclick={copyTemplate}
+
+			<button class="btn-copy-template" onclick={copyTemplate}
 				>Copia il template</button
 			>
 		</div>
 
-		<div>
+		<div class="file-input">
 			<input type="file" accept=".yaml" onchange={handleFileUpload} />
 		</div>
 	</div>
@@ -89,8 +90,10 @@
 	.upload-file-section {
 		width: 100%;
 		display: flex;
+		gap: 0.5rem;
+		flex-direction: column;
 		justify-content: space-between;
-		align-items: center;
+		align-items: start;
 	}
 
 	.settings-container {
@@ -113,7 +116,8 @@
 		padding: 0.5rem;
 	}
 
-	.btn-upload-file {
+	.btn-copy-template {
+		width: 100%;
 		background: var(--color-card);
 		color: white;
 		border: none;
@@ -140,7 +144,27 @@
 	}
 
 	.btn-reset-file:hover,
-	.btn-upload-file:hover {
+	.btn-copy-template:hover {
 		opacity: 0.85;
+	}
+
+	.file-input {
+		margin-top: 0.5rem;
+		background: rgba(100, 200, 100, 0.1);
+		width: 100%;
+		border: none;
+		border-radius: 7px;
+		padding: 0.5rem;
+	}
+
+	/* Responsiveness for slightly larger screens */
+	@media (min-width: 480px) {
+		.upload-file-section {
+			flex-direction: row;
+		}
+
+		.btn-copy-template {
+			width: fit-content;
+		}
 	}
 </style>
