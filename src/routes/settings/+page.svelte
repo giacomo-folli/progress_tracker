@@ -1,19 +1,18 @@
 <script lang="ts">
 	import { loadFromFile } from "$lib/data/storage";
 	import { exercises } from "$lib/stores/exercises";
-	import { loadExercises, saveExercises } from "$lib/utils/storage";
+	import { loadExercises } from "$lib/utils/storage";
 
 	let loading = $state(false);
 	async function handleLoadTrainingFile() {
 		const url = "https://giacomo-folli.github.io/prossima/training_plan.yaml";
+
 		const exercises_from_file = await loadFromFile(url);
 		const current_exercises = loadExercises() ?? [];
 
 		if (confirm("Sei sicuro? Questo resetterà i progressi correnti.")) {
 			loading = true;
-			// saveExercises(exercises_from_file);
-
-			exercises.reset(loadExercises() ?? current_exercises);
+			exercises.reset(exercises_from_file ?? current_exercises);
 			loading = false;
 		}
 	}
