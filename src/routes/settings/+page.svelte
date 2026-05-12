@@ -55,6 +55,27 @@
 			console.error("Copy failed:", error);
 		}
 	}
+
+	async function handleUploadFromClipboard() {
+		try {
+			const clipboardText = await navigator.clipboard.readText();
+			if (!clipboardText) {
+				alert("Il clipboard è vuoto.");
+				return;
+			}
+
+			const parsed = await parseYamlString(clipboardText);
+			exercises.reset(parsed ?? current_exercises);
+			alert(
+				"Contenuto del clipboard caricato con successo. Ritorna alla home per vedere i cambiamenti.",
+			);
+		} catch (error) {
+			console.error("Clipboard read failed:", error);
+			alert(
+				"Impossibile leggere il clipboard. Controlla i permessi del browser.",
+			);
+		}
+	}
 </script>
 
 <div class="settings-container">
@@ -67,8 +88,15 @@
 			>
 		</div>
 
-		<div class="file-input">
-			<input type="file" accept=".yaml" onchange={handleFileUpload} />
+		<div class="input-group">
+			<div class="file-input">
+				<input type="file" accept=".yaml" onchange={handleFileUpload} />
+			</div>
+			<div class="clipboard-input">
+				<button class="clipboard-button" onclick={handleUploadFromClipboard}
+					>Incolla dal clipboard</button
+				>
+			</div>
 		</div>
 	</div>
 
@@ -116,9 +144,7 @@
 		padding: 0.5rem;
 	}
 
-	.btn-copy-template {
-		width: 100%;
-		background: var(--color-card);
+	button {
 		color: white;
 		border: none;
 		border-radius: 7px;
@@ -130,17 +156,13 @@
 		transition: opacity 0.1s;
 	}
 
+	.btn-copy-template {
+		width: 100%;
+		background: var(--color-card);
+	}
+
 	.btn-reset-file {
 		background: rgba(255, 0, 0, 0.2);
-		color: white;
-		border: none;
-		border-radius: 7px;
-		padding: 0.5rem 1rem;
-		font-size: 0.8rem;
-		font-weight: 600;
-		cursor: pointer;
-		white-space: nowrap;
-		transition: opacity 0.1s;
 	}
 
 	.btn-reset-file:hover,
@@ -157,6 +179,36 @@
 		padding: 0.5rem;
 	}
 
+	.clipboard-input {
+		margin-top: 0.5rem;
+		display: flex;
+		align-items: center;
+		background: rgba(100, 200, 100, 0.1);
+		width: 100%;
+		border: none;
+		border-radius: 7px;
+		padding: 0.5rem;
+	}
+
+	.clipboard-button {
+		margin: none;
+		color: var(--color-text);
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: baseline;
+		background: transparent;
+		border: none;
+		padding: 0;
+	}
+
+	.input-group {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
 	/* Responsiveness for slightly larger screens */
 	@media (min-width: 480px) {
 		.upload-file-section {
@@ -165,6 +217,10 @@
 
 		.btn-copy-template {
 			width: fit-content;
+		}
+
+		.input-group {
+			flex-direction: row;
 		}
 	}
 </style>
