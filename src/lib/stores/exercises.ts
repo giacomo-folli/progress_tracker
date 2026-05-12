@@ -75,6 +75,23 @@ function createExercisesStore() {
 			);
 			persist(defaultExercises);
 		},
+
+		clearProgress() {
+			update((exercises) => {
+				const new_ex = exercises.map((ex) => ({
+					...ex,
+					steps: ex.steps.map((s) => ({
+						...s,
+						completed: false,
+						completedAt: undefined,
+					})),
+					currentStepIndex: 0,
+				}));
+
+				persist(new_ex);
+				return new_ex;
+			});
+		},
 	};
 }
 

@@ -1,115 +1,85 @@
-import type { Exercise } from '../types/exercise';
-
-export function makeSteps(labels: string[]) {
-	return labels.map((label, i) => ({
-		id: `step-${i}`,
-		label,
-		completed: false,
-		completedAt: undefined
-	}));
-}
+import { makeSteps } from "$lib/utils/parsing";
+import type { Exercise } from "../types/exercise";
 
 export const defaultExercises: Exercise[] = [
 	{
-		id: 'push-ups',
-		name: 'Push Ups',
+		id: "push-ups",
+		name: "Push Ups",
 		currentStepIndex: 0,
 		steps: makeSteps([
-			'10 rip x3',
-			'6 rip x3',
-			'8 rip x3',
-			'10 rip x3',
-			'12 rip x3',
-			'14 + 12 + 10',
-			'16 + 14 + 12',
-			'16 rip x3',
-			'20 rip x3 con pausa lunga'
-		])
+			"3 sets of 10 reps",
+			"3 sets of 6 reps",
+			"3 sets of 8 reps",
+			"3 sets of 10 reps",
+			"3 sets of 12 reps",
+			"3 sets: 14, 12, and 10 reps",
+			"3 sets: 16, 14, and 12 reps",
+			"3 sets of 16 reps",
+			"3 sets of 20 reps (Long rest)",
+		]),
 	},
 	{
-		id: 'pull-up',
-		name: 'Pull Up',
+		id: "hollow-body",
+		name: "Hollow Body",
 		currentStepIndex: 0,
 		steps: makeSteps([
-			'1 rip negative x5',
-			'2 rip negative x3',
-			'2 rip negative guidate x3',
-			'4 rip negative x4',
-			'2 rip x3',
-			'3 + 2 + 2 con elastici',
-			'3 + 2 + 2 + failure',
-			'4 + 3 + 2 + failure',
-			'6 + 6 + 6 con elastici'
-		])
+			"3 sets of 30 sec (Tuck hold)",
+			"3 sets of 40 sec (Tuck hold)",
+			"3 sets of 30 sec (Advanced tuck hold)",
+			"3 sets of 50 sec (Tuck hold)",
+			"3 sets of 30 sec (Single-leg hold, per leg)",
+			"3 sets of 40 sec (Single-leg hold, per leg)",
+			"3 sets of 30 sec (Full hold, arms by sides)",
+			"3 sets of 40 sec (Full hold, arms by sides)",
+			"3 sets of 50 sec (Full hold, arms by sides)",
+			"3 sets of 1 min (Full hold, arms by sides)",
+			"3 sets of 30 sec (Full hold)",
+			"1 set of 2 min (Full hold)",
+		]),
 	},
 	{
-		id: 'hollow-body',
-		name: 'Hollow Body',
+		id: "leg-raises",
+		name: "Leg Raises",
 		currentStepIndex: 0,
 		steps: makeSteps([
-			'30s tuck hollow x3',
-			'40s tuck hollow x3',
-			'30s tuck hollow advanced x3',
-			'50s tuck hollow x3',
-			'30s single leg hollow x3 (per lato)',
-			'40s single leg hollow x3 (per lato)',
-			'30s full senza braccia x3',
-			'40s full senza braccia x3',
-			'50s full senza braccia x3',
-			'1min full senza braccia x3',
-			'30s full x3',
-			'2min'
-		])
+			"2 sets of 30 reps on the floor (Bent knees)",
+			"2 sets of 30 reps on the floor (Knees bent at 45°)",
+			"2 sets of 25 reps on the floor (Bending knees only on the way up)",
+			"2 sets of 25 reps on the floor",
+			"2 sets of 20 reps on the floor (Full range of motion with lockout)",
+			"2 sets of 20 reps on the floor (Feet touching the floor)",
+			"2 sets of 15 reps (Bent knees) + 2 sets of Plow Raises",
+			"2 sets of 15 reps (Knees bent at 45°) + 2 sets of Plow Raises",
+			"2 sets of 15 reps + 2 sets of Plow Raises",
+			"2 sets of 20 reps + 2 sets of Plow Raises",
+			"2 sets of 15 reps (Toes touching hands)",
+		]),
 	},
 	{
-		id: 'leg-raises',
-		name: 'Leg Raises',
+		id: "burpees",
+		name: "Burpees",
 		currentStepIndex: 0,
 		steps: makeSteps([
-			'30 x2 al pavimento (gambe piegate)',
-			'30 x2 al pavimento (gambe piegate 45°)',
-			'25 x2 al pavimento (piegando solo in salita)',
-			'25 x2 al pavimento',
-			'20 x2 al pavimento completi con chiusura',
-			'20 x2 al pavimento toccando il pavimento',
-			'15 x2 (piegate) + 2 set di plow raises',
-			'15 x2 (piegate 45°) + 2 set di plow raises',
-			'15 x2 + 2 set di plow raises',
-			'20 x2 + 2 set di plow raises',
-			'15 x2 toccando le mani'
-		])
+			"3 sets of 1 min",
+			"3 sets of 1.5 mins",
+			"3 sets of 2 mins",
+			"3 sets of 1 min + 2 sets of 6 reps in 30 sec",
+			"3 sets of 1 min + 2 sets of 8 reps in 40 sec",
+			"3 sets of 1 min + 2 sets of 10 reps in 50 sec",
+			"3 sets of 12 reps (Within 1 min)",
+			"3 sets of 15 reps (Within 1 min)",
+		]),
 	},
 	{
-		id: 'burpees',
-		name: 'Burpees',
+		id: "squat",
+		name: "Squat",
 		currentStepIndex: 0,
 		steps: makeSteps([
-			'1min x3',
-			'1.5min x3',
-			'2min x3',
-			'1min x3 + 6 rip in 30s x2',
-			'1min x3 + 8 rip in 40s x2',
-			'1min x3 + 10 rip in 50s x2',
-			'12 rip in 1min x3',
-			'15 rip in 1min x3'
-		])
+			"6 sets of 8 reps (40 kg)",
+			"5 sets of 10 reps (40 kg)",
+			"5 sets of 10 reps (44 kg)",
+			"5 sets of 10 reps (48 kg)",
+			"3 sets of 10 reps (50 kg)",
+		]),
 	},
-	{
-		id: 'squat',
-		name: 'Squat',
-		currentStepIndex: 0,
-		steps: makeSteps([
-			'8 x6 con 40kg',
-			'10 x5 con 40kg',
-			'10 x5 con 44kg',
-			'10 x5 con 48kg',
-			'10 x3 con 50kg'
-		])
-	},
-	{
-		id: 'calf-raises',
-		name: 'Calf Raises',
-		currentStepIndex: 0,
-		steps: makeSteps(['6 x3 con 40kg', '8 x3 con 40kg'])
-	}
 ];

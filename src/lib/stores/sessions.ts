@@ -5,7 +5,7 @@ import { hashString } from "$lib/utils/hash";
 
 function createSessionsStore() {
 	const initial = loadSessions() ?? [];
-	const { subscribe, update } = writable<TrainingSession[]>(initial);
+	const { subscribe, update, set } = writable<TrainingSession[]>(initial);
 
 	return {
 		subscribe,
@@ -35,6 +35,11 @@ function createSessionsStore() {
 				saveSessions(next);
 				return next;
 			});
+		},
+
+		clearSessions() {
+			set([]);
+			saveSessions([]);
 		},
 	};
 }

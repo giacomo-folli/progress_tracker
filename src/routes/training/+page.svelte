@@ -91,7 +91,7 @@
 						bind:checked={item.checked}
 					/>
 					<a
-						href={resolve(`/exercise/${item.exerciseId}`)}
+						href={resolve(`/exercises/${item.exerciseId}`)}
 						class="program-link"
 					>
 						<span class="ex-name">{item.exerciseName}</span>
