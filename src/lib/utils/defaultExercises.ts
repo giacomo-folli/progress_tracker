@@ -1,5 +1,5 @@
 import { makeSteps } from "$lib/utils/parsing";
-import type { Exercise } from "../types/exercise";
+import type { Exercise } from "../types";
 
 export const defaultExercises: Exercise[] = [
 	{

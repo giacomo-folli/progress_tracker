@@ -1,9 +1,8 @@
 <script lang="ts">
-	import type { Step } from "../types/exercise";
-	let {
-		steps,
-		currentStepIndex,
-	}: { steps: Step[]; currentStepIndex: number } = $props();
+	import type { Step } from "../types";
+
+	let { steps, currentStepIndex }: { steps: Step[]; currentStepIndex: number } =
+		$props();
 </script>
 
 <ol class="step-list">

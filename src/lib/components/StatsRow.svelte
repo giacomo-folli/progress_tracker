@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { exercises } from "$lib/stores/exercises";
-	import type { Step } from "$lib/types/exercise";
+	import type { Step } from "$lib/types";
 	import ProgressBar from "./ProgressBar.svelte";
 
 	const totalSteps = $derived.by(() =>

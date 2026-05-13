@@ -3,7 +3,7 @@
 	import ProgressBar from "$lib/components/ProgressBar.svelte";
 	import { exercises } from "$lib/stores/exercises";
 	import { page } from "$app/state";
-	import type { Exercise } from "$lib/types/exercise";
+	import type { Exercise } from "$lib/types";
 	import { resolve } from "$app/paths";
 
 	const id = $state(page.params.id);

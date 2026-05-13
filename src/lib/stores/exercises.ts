@@ -1,15 +1,11 @@
 import { writable, derived } from "svelte/store";
-import type { Exercise } from "../types/exercise";
-import { defaultExercises } from "../data/defaultExercises";
+import type { Exercise } from "../types";
+import { defaultExercises } from "../utils/defaultExercises";
 import { loadExercises, saveExercises } from "../utils/storage";
 
 function createExercisesStore() {
 	const initial = loadExercises() ?? defaultExercises;
 	const { subscribe, set, update } = writable<Exercise[]>(initial);
-
-	function persist(exercises: Exercise[]) {
-		saveExercises(exercises);
-	}
 
 	return {
 		subscribe,
@@ -30,7 +26,7 @@ function createExercisesStore() {
 					exercise.currentStepIndex = nextIndex;
 				}
 
-				persist(exercises);
+				saveExercises(exercises);
 				return exercises;
 			});
 		},
@@ -55,15 +51,15 @@ function createExercisesStore() {
 				ex.steps[lastCompletedIndex].completedAt = undefined;
 				ex.currentStepIndex = lastCompletedIndex;
 
-				persist(exercises);
+				saveExercises(exercises);
 				return exercises;
 			});
 		},
 
-		reset(exercises?: Exercise[]) {
-			const newSet = exercises || defaultExercises;
+		reset(newExercises?: Exercise[]) {
+			const exercises = newExercises || defaultExercises;
 			set(
-				newSet.map((ex) => ({
+				exercises.map((ex) => ({
 					...ex,
 					steps: ex.steps.map((s) => ({
 						...s,
@@ -73,12 +69,13 @@ function createExercisesStore() {
 					currentStepIndex: 0,
 				})),
 			);
-			persist(newSet);
+
+			saveExercises(exercises);
 		},
 
 		clearProgress() {
 			update((exercises) => {
-				const new_ex = exercises.map((ex) => ({
+				const newExercise = exercises.map((ex) => ({
 					...ex,
 					steps: ex.steps.map((s) => ({
 						...s,
@@ -88,8 +85,8 @@ function createExercisesStore() {
 					currentStepIndex: 0,
 				}));
 
-				persist(new_ex);
-				return new_ex;
+				saveExercises(newExercise);
+				return newExercise;
 			});
 		},
 	};

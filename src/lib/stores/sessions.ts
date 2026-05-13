@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import type { TrainingSession, SessionExercise } from "../types/exercise";
+import type { TrainingSession, SessionExercise } from "../types";
 import { loadSessions, saveSessions } from "../utils/storage";
 import { hashString } from "$lib/utils/hash";
 

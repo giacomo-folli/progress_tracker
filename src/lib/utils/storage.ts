@@ -1,12 +1,10 @@
-import type { Exercise, TrainingSession } from "../types/exercise";
-
-const STORAGE_KEY = "progression-tracker-v1";
-const SESSIONS_KEY = "progression-tracker-sessions-v1";
+import type { Exercise, TrainingSession } from "../types";
+import { StorageKeys } from "./enums";
 
 export function loadExercises(): Exercise[] | null {
 	if (typeof localStorage === "undefined") return null;
 	try {
-		const raw = localStorage.getItem(STORAGE_KEY);
+		const raw = localStorage.getItem(StorageKeys.EXERCISES_PROGRESS);
 		if (!raw) return null;
 		return JSON.parse(raw) as Exercise[];
 	} catch {
@@ -17,21 +15,24 @@ export function loadExercises(): Exercise[] | null {
 export function saveExercises(exercises: Exercise[]): void {
 	if (typeof localStorage === "undefined") return;
 	try {
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(exercises));
+		localStorage.setItem(
+			StorageKeys.EXERCISES_PROGRESS,
+			JSON.stringify(exercises),
+		);
 	} catch {
 		// ignore
 	}
 }
 
-export function clearStorage(): void {
+export function clearExercisesProgress(): void {
 	if (typeof localStorage === "undefined") return;
-	localStorage.removeItem(STORAGE_KEY);
+	localStorage.removeItem(StorageKeys.EXERCISES_PROGRESS);
 }
 
 export function loadSessions(): TrainingSession[] | null {
 	if (typeof localStorage === "undefined") return null;
 	try {
-		const raw = localStorage.getItem(SESSIONS_KEY);
+		const raw = localStorage.getItem(StorageKeys.SESSIONS_LOG);
 		if (!raw) return null;
 		return JSON.parse(raw) as TrainingSession[];
 	} catch {
@@ -42,7 +43,7 @@ export function loadSessions(): TrainingSession[] | null {
 export function saveSessions(sessions: TrainingSession[]): void {
 	if (typeof localStorage === "undefined") return;
 	try {
-		localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
+		localStorage.setItem(StorageKeys.SESSIONS_LOG, JSON.stringify(sessions));
 	} catch {
 		// ignore
 	}

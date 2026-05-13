@@ -1,4 +1,4 @@
-import type { Exercise } from "../types/exercise";
+import type { Exercise } from "../types";
 import { parse } from "yaml";
 
 export async function parseYamlString(

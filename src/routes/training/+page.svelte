@@ -2,7 +2,7 @@
 	import { resolve } from "$app/paths";
 	import { exercises } from "$lib/stores/exercises";
 	import { sessions } from "$lib/stores/sessions";
-	import type { SessionExercise } from "$lib/types/exercise";
+	import type { SessionExercise } from "$lib/types";
 
 	let program = $derived(
 		$exercises
@@ -11,7 +11,7 @@
 				exerciseId: ex.id,
 				exerciseName: ex.name,
 				stepLabel: ex.steps[ex.currentStepIndex]?.label ?? "—",
-				checked: true
+				checked: true,
 			})),
 	);
 
@@ -158,15 +158,10 @@
 								>
 							{/if}
 						</div>
-						<div
-							class="session-exercises"
-							class:hidden={session.hidden}
-						>
+						<div class="session-exercises" class:hidden={session.hidden}>
 							{#each session.exercises as ex}
 								<li class="session-ex">
-									<span class="sex-name"
-										>{ex.exerciseName}</span
-									>
+									<span class="sex-name">{ex.exerciseName}</span>
 									<span class="sex-step">{ex.stepLabel}</span>
 								</li>
 							{/each}

@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { exercises } from "$lib/stores/exercises";
 	import { sessions } from "$lib/stores/sessions";
+	import { StorageKeys } from "$lib/utils/enums";
 	import { exercisesFileTemplate, parseYamlString } from "$lib/utils/parsing";
 	import { loadExercises } from "$lib/utils/storage";
 	import { onMount } from "svelte";
 
-	const YAML_STORAGE_KEY = "custom_yaml_config";
 	const current_exercises = loadExercises() ?? [];
 
 	let loading = $state(false);
@@ -15,8 +15,8 @@
 
 	// Load from localStorage on mount
 	onMount(() => {
-		yamlText = localStorage?.getItem(YAML_STORAGE_KEY) ?? "";
-		yamlSaved = !!localStorage?.getItem(YAML_STORAGE_KEY);
+		yamlText = localStorage?.getItem(StorageKeys.CONFIG_FILE) ?? "";
+		yamlSaved = !!localStorage?.getItem(StorageKeys.CONFIG_FILE);
 	});
 
 	function handleTextareaChange() {
@@ -31,7 +31,7 @@
 		}
 
 		// Save to storage the textarea content
-		localStorage.setItem(YAML_STORAGE_KEY, yamlText);
+		localStorage.setItem(StorageKeys.CONFIG_FILE, yamlText);
 		yamlSaved = true;
 		yamlDirty = false;
 
@@ -67,7 +67,7 @@
 		try {
 			const fileContent = await file.text();
 
-			localStorage.setItem(YAML_STORAGE_KEY, fileContent);
+			localStorage.setItem(StorageKeys.CONFIG_FILE, fileContent);
 
 			const parsed = await parseYamlString(fileContent);
 			exercises.reset(parsed ?? current_exercises);
