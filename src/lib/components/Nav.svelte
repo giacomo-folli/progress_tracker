@@ -2,10 +2,10 @@
 	import { resolve } from "$app/paths";
 	import { page } from "$app/state";
 
-	const isTraining = $derived(page.url.pathname === "/training");
-	const isExercises = $derived(page.url.pathname === "/exercises");
-	const isAnalytics = $derived(page.url.pathname === "/analytics");
-	const isSettings = $derived(page.url.pathname === "/settings");
+	const isTraining = $derived(page.url.pathname.includes("/training"));
+	const isExercises = $derived(page.url.pathname.includes("/exercises"));
+	const isAnalytics = $derived(page.url.pathname.includes("/analytics"));
+	const isSettings = $derived(page.url.pathname.includes("/settings"));
 </script>
 
 <nav class="tab-nav">
