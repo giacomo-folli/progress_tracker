@@ -348,42 +348,6 @@
 		background: var(--color-track);
 	}
 
-	.confirm-row {
-		display: flex;
-		gap: 0.4rem;
-		flex-shrink: 0;
-	}
-
-	.btn-confirm-del {
-		background: none;
-		border: 1px solid var(--color-border);
-		border-radius: 5px;
-		padding: 0.2rem 0.55rem;
-		font-size: 0.72rem;
-		color: #c0392b;
-		cursor: pointer;
-		transition: background 0.1s;
-	}
-
-	.btn-confirm-del:hover {
-		background: #fdf0ef;
-	}
-
-	.btn-cancel {
-		background: none;
-		border: 1px solid var(--color-border);
-		border-radius: 5px;
-		padding: 0.2rem 0.55rem;
-		font-size: 0.72rem;
-		color: var(--color-muted);
-		cursor: pointer;
-		transition: background 0.1s;
-	}
-
-	.btn-cancel:hover {
-		background: var(--color-track);
-	}
-
 	.session-exercises {
 		list-style: none;
 		margin: 0;
@@ -466,11 +430,6 @@
 			align-items: flex-start;
 			gap: 0.2rem;
 			padding: 0.5rem 0;
-		}
-
-		.confirm-row {
-			flex-direction: column;
-			gap: 0.2rem;
 		}
 	}
 </style>
