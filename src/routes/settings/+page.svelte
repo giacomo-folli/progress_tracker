@@ -2,7 +2,7 @@
 	import { exercises } from "$lib/stores/exercises";
 	import { sessions } from "$lib/stores/sessions";
 	import { StorageKeys } from "$lib/utils/enums";
-	import { exercisesFileTemplate, parseYamlString } from "$lib/utils/parsing";
+	import { defaultExercises, parseYamlString } from "$lib/utils/parsing";
 	import { loadExercises } from "$lib/utils/storage";
 	import { onMount } from "svelte";
 
@@ -50,10 +50,10 @@
 	}
 
 	// --- TEMPLATE ---
-	async function copyTemplate() {
+	async function copyYaml() {
 		try {
-			await navigator.clipboard.writeText(exercisesFileTemplate);
-			alert("Template copiato!");
+			await navigator.clipboard.writeText(yamlText);
+			alert("Testo copiato!");
 		} catch {
 			alert("Errore nella copia.");
 		}
@@ -129,9 +129,7 @@
 		></textarea>
 
 		<div class="btn-row">
-			<button class="btn btn-ghost" onclick={copyTemplate}
-				>Copia template</button
-			>
+			<button class="btn btn-ghost" onclick={copyYaml}>Copia</button>
 			<div class="btn-group-right">
 				<button class="btn btn-primary" onclick={handleLoadFromTextarea}
 					>Applica</button

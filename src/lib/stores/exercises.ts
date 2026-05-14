@@ -1,10 +1,9 @@
 import { writable, derived } from "svelte/store";
 import type { Exercise } from "../types";
-import { defaultExercises } from "../utils/defaultExercises";
 import { loadExercises, saveExercises } from "../utils/storage";
 
 function createExercisesStore() {
-	const initial = loadExercises() ?? defaultExercises;
+	const initial = loadExercises() ?? [];
 	const { subscribe, set, update } = writable<Exercise[]>(initial);
 
 	return {
@@ -57,7 +56,7 @@ function createExercisesStore() {
 		},
 
 		reset(newExercises?: Exercise[]) {
-			const exercises = newExercises || defaultExercises;
+			const exercises = newExercises || [];
 			set(
 				exercises.map((ex) => ({
 					...ex,
