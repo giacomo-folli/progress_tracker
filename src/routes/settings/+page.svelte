@@ -119,17 +119,23 @@
 			Scrivi o incolla la tua configurazione. Viene salvata nel browser.
 		</p>
 
-		<textarea
-			class="yaml-textarea"
-			placeholder="Incolla qui il tuo YAML..."
-			bind:value={yamlText}
-			oninput={handleTextareaChange}
-			rows="8"
-			spellcheck="false"
-		></textarea>
+		<div class="textarea-wrapper">
+			<textarea
+				class="yaml-textarea"
+				placeholder="Incolla qui il tuo YAML..."
+				bind:value={yamlText}
+				oninput={handleTextareaChange}
+				rows="8"
+				spellcheck="false"
+			></textarea>
+
+			<button class="btn btn-copy" onclick={copyYaml} aria-label="Copia"
+				>Copia</button
+			>
+		</div>
 
 		<div class="btn-row">
-			<button class="btn btn-ghost" onclick={copyYaml}>Copia</button>
+			<!-- <button class="btn btn-ghost" onclick={copyYaml}>Copia</button> -->
 			<div class="btn-group-right">
 				<button class="btn btn-primary" onclick={handleLoadFromTextarea}
 					>Applica</button
@@ -245,12 +251,13 @@
 	/* ---- Textarea ---- */
 	.yaml-textarea {
 		width: 100%;
-		min-height: 160px;
+		min-height: 360px;
 		background: rgba(0, 0, 0, 0.25);
 		color: var(--color-text);
 		border: 1px solid rgba(255, 255, 255, 0.08);
 		border-radius: 7px;
-		padding: 0.6rem 0.75rem;
+		/* padding: 0.6rem 0.75rem; */
+		padding: 0.6rem 2.8rem 0.6rem 0.75rem;
 		font-family: "Courier New", monospace;
 		font-size: 0.78rem;
 		line-height: 1.5;
@@ -315,14 +322,9 @@
 		color: #000;
 	}
 
-	.btn-ghost {
-		background: transparent;
-		color: rgba(255, 255, 255, 0.5);
-		padding-left: 0.25rem;
-	}
-
-	.btn-ghost:hover {
-		color: white;
+	.textarea-wrapper {
+		position: relative;
+		width: 100%;
 	}
 
 	.btn-primary:hover {
@@ -394,5 +396,27 @@
 		.card {
 			padding: 1.25rem;
 		}
+	}
+
+	.btn-copy {
+		position: absolute;
+		top: 6px;
+		right: 8px;
+		background: rgba(255, 255, 255, 0.07);
+		border: 1px solid rgba(255, 255, 255, 0.12) !important;
+		border-radius: 5px;
+		padding: 0.2rem 0.5rem;
+		font-size: 0.72rem;
+		font-weight: 600;
+		color: rgba(255, 255, 255, 0.5);
+		cursor: pointer;
+		transition:
+			background 0.15s,
+			color 0.15s;
+	}
+
+	.btn-copy:hover {
+		background: rgba(255, 255, 255, 0.14);
+		color: white;
 	}
 </style>
