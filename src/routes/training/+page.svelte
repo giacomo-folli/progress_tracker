@@ -61,7 +61,6 @@
 	function toggleSessionInfo(id: string) {
 		const toggled = pastSessions.find((s) => s.id == id);
 		if (!toggled) return;
-		console.log("FOUND");
 
 		pastSessions = pastSessions.map((s) => {
 			if (s.id == id) return { ...toggled, hidden: !toggled.hidden };

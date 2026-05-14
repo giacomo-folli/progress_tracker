@@ -1,9 +1,6 @@
 <script lang="ts">
 	import ExerciseCard from "$lib/components/ExerciseCard.svelte";
-	import { exerciseProgress, exercises } from "$lib/stores/exercises";
-
-	exercises.subscribe((v) => console.log("exercises changed", v));
-	exerciseProgress.subscribe((v) => console.log("progress changed", v));
+	import { exerciseProgress } from "$lib/stores/exercises";
 </script>
 
 <main>
