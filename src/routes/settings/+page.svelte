@@ -2,7 +2,7 @@
 	import { exercises } from "$lib/stores/exercises";
 	import { sessions } from "$lib/stores/sessions";
 	import { StorageKeys } from "$lib/utils/enums";
-	import { defaultExercises, parseYamlString } from "$lib/utils/parsing";
+	import { parseYamlString } from "$lib/utils/parsing";
 	import { loadExercises } from "$lib/utils/storage";
 	import { onMount } from "svelte";
 
@@ -136,7 +136,6 @@
 		</div>
 
 		<div class="btn-row">
-			<!-- <button class="btn btn-ghost" onclick={copyYaml}>Copia</button> -->
 			<div class="btn-group-right">
 				<button class="btn btn-primary" onclick={handleLoadFromTextarea}
 					>Applica</button
@@ -185,6 +184,100 @@
 </div>
 
 <style>
+	/* ---- Design tokens (light defaults) ---- */
+	:root {
+		/* Badge: saved (green) */
+		--color-badge-saved-text: #16a34a;
+		--color-badge-saved-bg: rgba(22, 163, 74, 0.12);
+
+		/* Badge: unsaved (amber) */
+		--color-badge-unsaved-text: #d97706;
+		--color-badge-unsaved-bg: rgba(217, 119, 6, 0.12);
+
+		/* Textarea */
+		--color-textarea-bg: rgba(0, 0, 0, 0.06);
+		--color-textarea-border: rgba(0, 0, 0, 0.1);
+		--color-textarea-border-focus: rgba(0, 0, 0, 0.3);
+		--color-textarea-placeholder: rgba(0, 0, 0, 0.25);
+
+		/* Code inline */
+		--color-code-bg: rgba(0, 0, 0, 0.07);
+
+		/* Section description */
+		--color-text-muted: rgba(0, 0, 0, 0.5);
+
+		/* File upload CTA */
+		--color-file-cta-bg: rgba(22, 163, 74, 0.07);
+		--color-file-cta-border: rgba(22, 163, 74, 0.3);
+		--color-file-cta-text: rgba(0, 0, 0, 0.8);
+		--color-file-cta-bg-hover: rgba(22, 163, 74, 0.13);
+		--color-file-cta-border-hover: rgba(22, 163, 74, 0.5);
+		--color-file-cta-text-hover: rgba(0, 0, 0, 0.85);
+
+		/* Danger zone */
+		--color-danger-card-bg: rgba(220, 38, 38, 0.07);
+		--color-danger-card-border: rgba(220, 38, 38, 0.15);
+		--color-danger-title: rgba(185, 28, 28, 0.9);
+		--color-danger-btn-bg: rgba(220, 38, 38, 0.15);
+		--color-danger-btn-text: rgba(185, 28, 28, 0.95);
+		--color-danger-btn-bg-hover: rgba(220, 38, 38, 0.26);
+
+		/* Copy button */
+		--color-btn-copy-bg: rgba(0, 0, 0, 0.05);
+		--color-btn-copy-border: rgba(0, 0, 0, 0.1);
+		--color-btn-copy-text: rgba(0, 0, 0, 0.4);
+		--color-btn-copy-bg-hover: rgba(0, 0, 0, 0.1);
+		--color-btn-copy-text-hover: rgba(0, 0, 0, 0.85);
+	}
+
+	/* ---- Dark scheme overrides ---- */
+	@media (prefers-color-scheme: dark) {
+		:root {
+			/* Badge: saved */
+			--color-badge-saved-text: #4ade80;
+			--color-badge-saved-bg: rgba(74, 222, 128, 0.12);
+
+			/* Badge: unsaved */
+			--color-badge-unsaved-text: #fbbf24;
+			--color-badge-unsaved-bg: rgba(251, 191, 36, 0.12);
+
+			/* Textarea */
+			--color-textarea-bg: rgba(0, 0, 0, 0.25);
+			--color-textarea-border: rgba(255, 255, 255, 0.08);
+			--color-textarea-border-focus: rgba(255, 255, 255, 0.25);
+			--color-textarea-placeholder: rgba(255, 255, 255, 0.25);
+
+			/* Code inline */
+			--color-code-bg: rgba(255, 255, 255, 0.08);
+
+			/* Section description */
+			--color-text-muted: rgba(255, 255, 255, 0.5);
+
+			/* File upload CTA */
+			--color-file-cta-bg: rgba(100, 200, 100, 0.08);
+			--color-file-cta-border: rgba(100, 200, 100, 0.3);
+			--color-file-cta-text: rgba(255, 255, 255, 0.6);
+			--color-file-cta-bg-hover: rgba(100, 200, 100, 0.14);
+			--color-file-cta-border-hover: rgba(100, 200, 100, 0.5);
+			--color-file-cta-text-hover: white;
+
+			/* Danger zone */
+			--color-danger-card-bg: rgba(255, 0, 0, 0.08);
+			--color-danger-card-border: rgba(255, 0, 0, 0.15);
+			--color-danger-title: rgba(255, 100, 100, 0.9);
+			--color-danger-btn-bg: rgba(255, 0, 0, 0.18);
+			--color-danger-btn-text: rgba(255, 180, 180, 0.95);
+			--color-danger-btn-bg-hover: rgba(255, 0, 0, 0.28);
+
+			/* Copy button */
+			--color-btn-copy-bg: rgba(255, 255, 255, 0.07);
+			--color-btn-copy-border: rgba(255, 255, 255, 0.12);
+			--color-btn-copy-text: rgba(255, 255, 255, 0.5);
+			--color-btn-copy-bg-hover: rgba(255, 255, 255, 0.14);
+			--color-btn-copy-text-hover: white;
+		}
+	}
+
 	/* ---- Base ---- */
 	.settings-container {
 		width: 100%;
@@ -219,14 +312,14 @@
 
 	.section-desc {
 		font-size: 0.78rem;
-		color: var(--color-text-muted, rgba(255, 255, 255, 0.5));
+		color: var(--color-text-muted);
 		margin: 0;
 		line-height: 1.4;
 	}
 
 	code {
 		font-size: 0.75rem;
-		background: rgba(255, 255, 255, 0.08);
+		background: var(--color-code-bg);
 		padding: 0.1em 0.35em;
 		border-radius: 4px;
 	}
@@ -240,24 +333,23 @@
 	}
 
 	.badge-saved {
-		color: #4ade80;
-		background: rgba(74, 222, 128, 0.12);
+		color: var(--color-badge-saved-text);
+		background: var(--color-badge-saved-bg);
 	}
 
 	.badge-unsaved {
-		color: #fbbf24;
-		background: rgba(251, 191, 36, 0.12);
+		color: var(--color-badge-unsaved-text);
+		background: var(--color-badge-unsaved-bg);
 	}
 
 	/* ---- Textarea ---- */
 	.yaml-textarea {
 		width: 100%;
 		min-height: 360px;
-		background: rgba(0, 0, 0, 0.25);
+		background: var(--color-textarea-bg);
 		color: var(--color-text);
-		border: 1px solid rgba(255, 255, 255, 0.08);
+		border: 1px solid var(--color-textarea-border);
 		border-radius: 7px;
-		/* padding: 0.6rem 0.75rem; */
 		padding: 0.6rem 2.8rem 0.6rem 0.75rem;
 		font-family: "Courier New", monospace;
 		font-size: 0.78rem;
@@ -269,11 +361,11 @@
 
 	.yaml-textarea:focus {
 		outline: none;
-		border-color: rgba(255, 255, 255, 0.25);
+		border-color: var(--color-textarea-border-focus);
 	}
 
 	.yaml-textarea::placeholder {
-		color: rgba(255, 255, 255, 0.25);
+		color: var(--color-textarea-placeholder);
 	}
 
 	/* ---- Button row ---- */
@@ -319,8 +411,8 @@
 	}
 
 	.btn-primary {
-		background: var(--color-accent, #22c55e);
-		color: #000;
+		background: var(--color-accent);
+		color: var(--color-text);
 	}
 
 	.textarea-wrapper {
@@ -349,12 +441,12 @@
 		width: 100%;
 		box-sizing: border-box;
 		padding: 0.65rem 1rem;
-		background: rgba(100, 200, 100, 0.08);
-		border: 1px dashed rgba(100, 200, 100, 0.3);
+		background: var(--color-file-cta-bg);
+		border: 1px dashed var(--color-file-cta-border);
 		border-radius: 7px;
 		font-size: 0.82rem;
 		font-weight: 600;
-		color: rgba(255, 255, 255, 0.6);
+		color: var(--color-file-cta-text);
 		transition:
 			background 0.15s,
 			border-color 0.15s,
@@ -362,19 +454,19 @@
 	}
 
 	.file-label:hover .file-cta {
-		background: rgba(100, 200, 100, 0.14);
-		border-color: rgba(100, 200, 100, 0.5);
-		color: white;
+		background: var(--color-file-cta-bg-hover);
+		border-color: var(--color-file-cta-border-hover);
+		color: var(--color-file-cta-text-hover);
 	}
 
 	/* ---- Danger card ---- */
 	.danger-card {
-		background: rgba(255, 0, 0, 0.08);
-		border: 1px solid rgba(255, 0, 0, 0.15);
+		background: var(--color-danger-card-bg);
+		border: 1px solid var(--color-danger-card-border);
 	}
 
 	.danger-title {
-		color: rgba(255, 100, 100, 0.9);
+		color: var(--color-danger-title);
 	}
 
 	.danger-buttons {
@@ -384,13 +476,13 @@
 	}
 
 	.btn-danger {
-		background: rgba(255, 0, 0, 0.18);
-		color: rgba(255, 180, 180, 0.95);
+		background: var(--color-danger-btn-bg);
+		color: var(--color-danger-btn-text);
 		width: 100%;
 	}
 
 	.btn-danger:hover:not(:disabled) {
-		background: rgba(255, 0, 0, 0.28);
+		background: var(--color-danger-btn-bg-hover);
 	}
 
 	@media (min-width: 480px) {
@@ -403,13 +495,13 @@
 		position: absolute;
 		top: 6px;
 		right: 8px;
-		background: rgba(255, 255, 255, 0.07);
-		border: 1px solid rgba(255, 255, 255, 0.12) !important;
+		background: var(--color-btn-copy-bg);
+		border: 1px solid var(--color-btn-copy-border) !important;
 		border-radius: 5px;
 		padding: 0.2rem 0.5rem;
 		font-size: 0.72rem;
 		font-weight: 600;
-		color: rgba(255, 255, 255, 0.5);
+		color: var(--color-btn-copy-text);
 		cursor: pointer;
 		transition:
 			background 0.15s,
@@ -417,7 +509,7 @@
 	}
 
 	.btn-copy:hover {
-		background: rgba(255, 255, 255, 0.14);
-		color: white;
+		background: var(--color-btn-copy-bg-hover);
+		color: var(--color-btn-copy-text-hover);
 	}
 </style>

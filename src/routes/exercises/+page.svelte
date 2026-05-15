@@ -4,7 +4,7 @@
 </script>
 
 <main>
-	<div class="grid">
+	<div class="exercises-grid">
 		{#each $exerciseProgress as ex (ex.id)}
 			<ExerciseCard
 				id={ex.id}
@@ -21,7 +21,7 @@
 </main>
 
 <style>
-	.grid {
+	.exercises-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 		gap: 1rem;
