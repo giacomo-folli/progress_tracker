@@ -358,6 +358,7 @@
 	}
 
 	.file-cta {
+		margin-top: 0.5rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -366,7 +367,7 @@
 		padding: 0.65rem 1rem;
 		background: var(--color-file-cta-bg);
 		border: 1px dashed var(--color-file-cta-border);
-		border-radius: var(--border-radius);
+		border-radius: 7px;
 		font-size: 0.82rem;
 		font-weight: 600;
 		color: var(--color-file-cta-text);
