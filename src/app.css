@@ -44,6 +44,149 @@ body {
 	-webkit-font-smoothing: antialiased;
 }
 
+button,
+.btn {
+	font-family: inherit;
+	border: none;
+	border-radius: 0.55rem;
+	padding: 0.7rem 1rem;
+	font-size: 0.9rem;
+	font-weight: 600;
+	cursor: pointer;
+	white-space: nowrap;
+	transition: background 0.15s ease, opacity 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+button:disabled,
+.btn:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+.btn {
+	background: var(--color-accent);
+	color: white;
+}
+
+.btn--primary,
+.btn-primary {
+	background: var(--color-accent);
+	color: white;
+}
+
+.btn--secondary,
+.btn-secondary,
+.btn--ghost {
+	background: transparent;
+	color: var(--color-text);
+	border: 1px solid var(--color-border);
+}
+
+.btn--danger {
+	background: var(--color-danger);
+	color: white;
+}
+
+.btn-danger {
+	background: var(--color-danger);
+	color: white;
+}
+
+.btn--copy,
+.btn-copy {
+	background: var(--color-track);
+	color: var(--color-text);
+	border: 1px solid var(--color-border);
+	padding: 0.35rem 0.75rem;
+}
+
+.btn:hover:not(:disabled),
+.btn--copy:hover:not(:disabled) {
+	opacity: 0.85;
+}
+
+.card {
+	background: var(--color-card);
+	border: 1px solid var(--color-border);
+	border-radius: 1rem;
+	padding: 1rem;
+}
+
+.card--danger {
+	background: var(--color-danger-card-bg, var(--color-card));
+	border-color: var(--color-danger-card-border, var(--color-border));
+}
+
+.card-title {
+	margin: 0 0 0.9rem;
+	font-size: 0.7rem;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--color-muted);
+}
+
+.card-title-sub {
+	font-weight: 400;
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+.section-header {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+
+.section-title {
+	font-size: 0.95rem;
+	font-weight: 700;
+	color: var(--color-text);
+}
+
+.section-desc {
+	margin: 0;
+	color: var(--color-muted);
+	font-size: 0.85rem;
+	line-height: 1.4;
+}
+
+.section-label {
+	display: block;
+	margin: 0 0 0.6rem;
+	font-size: 0.72rem;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--color-muted);
+}
+
+.badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	padding: 0.15rem 0.5rem;
+	border-radius: 999px;
+	font-size: 0.7rem;
+	font-weight: 600;
+}
+
+.badge--saved,
+.badge-saved {
+	color: var(--color-badge-saved-text);
+	background: var(--color-badge-saved-bg);
+}
+
+.badge--unsaved,
+.badge-unsaved {
+	color: var(--color-badge-unsaved-text);
+	background: var(--color-badge-unsaved-bg);
+}
+
+.empty {
+	color: var(--color-muted);
+	font-size: 0.9rem;
+}
+
 a {
 	color: inherit;
 }

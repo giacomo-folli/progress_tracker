@@ -278,43 +278,11 @@
 		}
 	}
 
-	/* ---- Base ---- */
 	.settings-container {
 		width: 100%;
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
-	}
-
-	/* ---- Card ---- */
-	.card {
-		background: var(--color-card);
-		border-radius: 10px;
-		padding: 1rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-	}
-
-	/* ---- Section header ---- */
-	.section-header {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		flex-wrap: wrap;
-	}
-
-	.section-title {
-		font-size: 0.9rem;
-		font-weight: 700;
-		color: var(--color-text);
-	}
-
-	.section-desc {
-		font-size: 0.78rem;
-		color: var(--color-text-muted);
-		margin: 0;
-		line-height: 1.4;
 	}
 
 	code {
@@ -324,24 +292,6 @@
 		border-radius: 4px;
 	}
 
-	/* ---- Badges ---- */
-	.badge {
-		font-size: 0.7rem;
-		font-weight: 600;
-		padding: 0.15rem 0.5rem;
-		border-radius: 99px;
-	}
-
-	.badge-saved {
-		color: var(--color-badge-saved-text);
-		background: var(--color-badge-saved-bg);
-	}
-
-	.badge-unsaved {
-		color: var(--color-badge-unsaved-text);
-		background: var(--color-badge-unsaved-bg);
-	}
-
 	/* ---- Textarea ---- */
 	.yaml-textarea {
 		width: 100%;
@@ -349,14 +299,14 @@
 		background: var(--color-textarea-bg);
 		color: var(--color-text);
 		border: 1px solid var(--color-textarea-border);
-		border-radius: 7px;
-		padding: 0.6rem 2.8rem 0.6rem 0.75rem;
+		border-radius: 0.85rem;
+		padding: 0.75rem 2.8rem 0.75rem 0.75rem;
 		font-family: "Courier New", monospace;
 		font-size: 0.78rem;
 		line-height: 1.5;
 		resize: vertical;
 		box-sizing: border-box;
-		transition: border-color 0.15s;
+		transition: border-color 0.15s ease;
 	}
 
 	.yaml-textarea:focus {
@@ -370,6 +320,7 @@
 
 	/* ---- Button row ---- */
 	.btn-row {
+		margin-top: 0.5rem;
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
@@ -390,38 +341,10 @@
 		}
 	}
 
-	/* ---- Buttons ---- */
-	button {
-		border: none;
-		border-radius: 7px;
-		padding: 0.5rem 1rem;
-		font-size: 0.8rem;
-		font-weight: 600;
-		cursor: pointer;
-		white-space: nowrap;
-		transition:
-			opacity 0.15s,
-			background 0.15s;
-		color: white;
-	}
-
-	button:disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
-	}
-
-	.btn-primary {
-		background: var(--color-accent);
-		color: var(--color-text);
-	}
-
 	.textarea-wrapper {
+		margin-top: 0.5rem;
 		position: relative;
 		width: 100%;
-	}
-
-	.btn-primary:hover {
-		opacity: 0.85;
 	}
 
 	/* ---- File upload ---- */
@@ -443,7 +366,7 @@
 		padding: 0.65rem 1rem;
 		background: var(--color-file-cta-bg);
 		border: 1px dashed var(--color-file-cta-border);
-		border-radius: 7px;
+		border-radius: var(--border-radius);
 		font-size: 0.82rem;
 		font-weight: 600;
 		color: var(--color-file-cta-text);
@@ -470,6 +393,7 @@
 	}
 
 	.danger-buttons {
+		margin-top: 0.5rem;
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;

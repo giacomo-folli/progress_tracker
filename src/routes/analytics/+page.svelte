@@ -302,7 +302,7 @@
 			{#each exerciseStats as ex}
 				<li class="prog-item">
 					<div class="prog-top">
-						<a href="/exercise/{ex.id}" class="prog-name">{ex.name}</a>
+						<a href="/exercises/{ex.id}" class="prog-name">{ex.name}</a>
 						<span class="prog-pct">{ex.pct}%</span>
 					</div>
 					<div class="prog-bar-track">
@@ -332,11 +332,6 @@
 		margin: 0.3rem 0 0;
 		font-size: 0.82rem;
 		color: var(--color-muted);
-	}
-
-	.empty {
-		color: var(--color-muted);
-		font-size: 0.9rem;
 	}
 
 	/* ── stat row: 2-col on mobile, 4-col on desktop ── */
@@ -416,12 +411,8 @@
 		line-height: 1.3;
 	}
 
-	/* ── generic card ── */
+	/* ── generic card spacing ── */
 	.card {
-		background: var(--color-card);
-		border: 1px solid var(--color-border);
-		border-radius: 10px;
-		padding: 1rem;
 		margin-bottom: 0.6rem;
 	}
 
@@ -434,20 +425,6 @@
 
 	.card:last-child {
 		margin-bottom: 0;
-	}
-
-	.card-title {
-		margin: 0 0 0.9rem;
-		font-size: 0.7rem;
-		text-transform: uppercase;
-		letter-spacing: 0.06em;
-		color: var(--color-muted);
-	}
-
-	.card-title-sub {
-		font-weight: 400;
-		text-transform: none;
-		letter-spacing: 0;
 	}
 
 	/* ── streak ── */

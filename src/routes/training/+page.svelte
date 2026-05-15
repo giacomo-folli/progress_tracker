@@ -78,7 +78,7 @@
 				<p class="col-sub">{program.length} esercizi</p>
 			</div>
 			<button
-				class="btn-log"
+				class="btn btn--primary btn-log"
 				class:logged={logging}
 				onclick={logSession}
 				disabled={program.length === 0 || logging}
@@ -137,7 +137,7 @@
 							</div>
 
 							<button
-								class="btn-delete"
+								class="btn btn-delete"
 								onclick={(e) => handleDeleteSession(e, session.id)}
 								aria-label="Elimina sessione">×</button
 							>
@@ -240,29 +240,9 @@
 		flex-shrink: 0;
 	}
 
-	/* Log button */
+	/* Log button state */
 	.btn-log {
-		background: var(--color-accent);
-		color: white;
-		border: none;
-		border-radius: 7px;
-		padding: 0.5rem 1rem;
-		font-size: 0.8rem;
-		font-weight: 600;
-		cursor: pointer;
-		white-space: nowrap;
-		transition:
-			opacity 0.15s,
-			background 0.25s;
 		flex-shrink: 0;
-	}
-
-	.btn-log:hover:not(:disabled) {
-		opacity: 0.85;
-	}
-
-	.btn-log:disabled {
-		cursor: default;
 	}
 
 	.btn-log.logged {
@@ -270,11 +250,6 @@
 	}
 
 	/* History */
-	.empty {
-		font-size: 0.85rem;
-		color: var(--color-muted);
-		margin: 0;
-	}
 
 	.session-list {
 		list-style: none;

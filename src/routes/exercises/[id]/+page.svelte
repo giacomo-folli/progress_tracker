@@ -68,7 +68,7 @@
 					<p class="current-step-label">
 						{currentStep?.label ?? "—"}
 					</p>
-					<button class="btn-complete" onclick={completeStep}>
+					<button class="btn btn--primary btn-complete" onclick={completeStep}>
 						Mark complete
 					</button>
 				</div>
@@ -83,7 +83,7 @@
 			<div class="steps-header">
 				<p class="section-label">All steps</p>
 				{#if hasCompleted}
-					<button class="btn-undo" onclick={undoStep}
+					<button class="btn btn--secondary btn-undo" onclick={undoStep}
 						>Undo last</button
 					>
 				{/if}
@@ -152,14 +152,6 @@
 		color: var(--color-muted);
 	}
 
-	.section-label {
-		margin: 0 0 0.6rem;
-		font-size: 0.7rem;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: var(--color-muted);
-	}
-
 	.current-section {
 		margin-bottom: 2.5rem;
 	}
@@ -180,23 +172,6 @@
 		font-size: 0.95rem;
 		font-weight: 600;
 		color: var(--color-text);
-	}
-
-	.btn-complete {
-		background: var(--color-accent);
-		color: white;
-		border: none;
-		border-radius: 7px;
-		padding: 0.5rem 1rem;
-		font-size: 0.8rem;
-		font-weight: 600;
-		cursor: pointer;
-		white-space: nowrap;
-		transition: opacity 0.1s;
-	}
-
-	.btn-complete:hover {
-		opacity: 0.85;
 	}
 
 	.complete-banner {
