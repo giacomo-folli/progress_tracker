@@ -2,8 +2,10 @@
 	import { resolve } from "$app/paths";
 	import { exercises } from "$lib/stores/exercises";
 	import { sessions } from "$lib/stores/sessions";
-	import type { SessionExercise } from "$lib/types";
+	import type { QuickExercise, SessionExercise } from "$lib/types";
 	import CelebrationOverlay from "$lib/components/CelebrationOverlay.svelte";
+	import { quickExercises } from "$lib/stores/quickExercises";
+	import SessionHistory from "$lib/components/SessionHistory.svelte";
 
 	let program = $derived(
 		$exercises
@@ -16,6 +18,7 @@
 			})),
 	);
 
+	let selectedQuick = $state<Map<string, QuickExercise>>(new Map());
 	let celebrating = $state(false);
 
 	function logSession() {
@@ -24,27 +27,29 @@
 			.filter((ex) => ex.checked)
 			.map((p) => {
 				const { checked, ...rest } = p;
-				return rest;
+				return { ...rest, type: "exercise" };
 			});
+
+		selectedQuick.forEach((val) => {
+			snapshot.push({
+				exerciseId: val.id,
+				exerciseName: val.label,
+				type: "quick-exeercise",
+			});
+		});
 
 		sessions.logSession(snapshot);
 		celebrating = true;
 	}
 
-	const quickExercises = [
-		{ id: "yoga", icon: "🧘", label: "Yoga" },
-		{ id: "stretching", icon: "🤸", label: "Stretching" },
-		{ id: "fisio", icon: "🦶🏼", label: "Esercizi per caviglia" },
-	];
+	function toggleQuick(qEx: QuickExercise) {
+		if (selectedQuick.has(qEx.id)) {
+			selectedQuick.delete(qEx.id);
+		} else {
+			selectedQuick.set(qEx.id, qEx);
+		}
 
-	let selectedQuick = $state<Set<string>>(new Set());
-
-	function toggleQuick(id: string) {
-		selectedQuick = new Set(
-			selectedQuick.has(id)
-				? [...selectedQuick].filter((x) => x !== id)
-				: [...selectedQuick, id],
-		);
+		selectedQuick = new Map(selectedQuick.entries());
 	}
 </script>
 
@@ -86,11 +91,11 @@
 	<section class="quick-section">
 		<p class="quick-label">Esercizi rapidi</p>
 		<div class="quick-grid">
-			{#each quickExercises as ex (ex.id)}
+			{#each $quickExercises as ex (ex.id)}
 				<button
 					class="quick-box"
 					class:active={selectedQuick.has(ex.id)}
-					onclick={() => toggleQuick(ex.id)}
+					onclick={() => toggleQuick(ex)}
 					aria-pressed={selectedQuick.has(ex.id)}
 				>
 					<span class="quick-icon" aria-hidden="true">{ex.icon}</span>
@@ -109,6 +114,8 @@
 			Registra sessione
 		</button>
 	</section>
+
+	<SessionHistory />
 </div>
 
 <style>

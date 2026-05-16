@@ -1,4 +1,4 @@
-import type { Exercise, TrainingSession } from "../types";
+import type { Exercise, QuickExercise, TrainingSession } from "../types";
 import { StorageKeys } from "./enums";
 import { toYamlString } from "./parsing";
 
@@ -53,6 +53,29 @@ export function saveSessions(sessions: TrainingSession[]): void {
 	if (typeof localStorage === "undefined") return;
 	try {
 		localStorage.setItem(StorageKeys.SESSIONS_LOG, JSON.stringify(sessions));
+	} catch {
+		// ignore
+	}
+}
+
+export function loadQuickExercises(): QuickExercise[] | null {
+	if (typeof localStorage === "undefined") return null;
+	try {
+		const raw = localStorage.getItem(StorageKeys.QUICK_EXERCISES);
+		if (!raw) return null;
+		return JSON.parse(raw) as QuickExercise[];
+	} catch {
+		return null;
+	}
+}
+
+export function saveQuickExercises(quickExercises: QuickExercise[]): void {
+	if (typeof localStorage === "undefined") return;
+	try {
+		localStorage.setItem(
+			StorageKeys.QUICK_EXERCISES,
+			JSON.stringify(quickExercises),
+		);
 	} catch {
 		// ignore
 	}

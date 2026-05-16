@@ -1,4 +1,4 @@
-import type { Exercise, ExerciseDefinition } from "../types";
+import type { Exercise, ExerciseDefinition, QuickExercise } from "../types";
 import { parse, stringify } from "yaml";
 
 export function toYamlString(exercises: Exercise[]): string {
@@ -19,11 +19,19 @@ export function toYamlString(exercises: Exercise[]): string {
 	}
 }
 
-export function parseYamlString(string: string = ""): Exercise[] {
+export function parseYamlString(string: string = ""): {
+	exercises: Exercise[];
+	quickExercises?: QuickExercise[];
+} {
 	try {
 		const parsedData = parse(string) as {
 			version: number;
 			exercises: Record<string, ExerciseDefinition>;
+			"quick-exercises"?: {
+				id: string;
+				label: string;
+				emoji?: string;
+			}[];
 		};
 
 		if (!parsedData || !parsedData.exercises) {
@@ -31,6 +39,8 @@ export function parseYamlString(string: string = ""): Exercise[] {
 		}
 
 		const parsedExercises = Object.entries(parsedData.exercises);
+		const parsedQuickExercises = parsedData?.["quick-exercises"] ?? [];
+
 		const exercisesArray: Exercise[] = parsedExercises.map(([key, data]) => {
 			let lastCompletedStepIndex = data.steps.findIndex(
 				(s) => s?.completed === true,
@@ -52,7 +62,7 @@ export function parseYamlString(string: string = ""): Exercise[] {
 			} as Exercise;
 		});
 
-		return exercisesArray;
+		return { exercises: exercisesArray, quickExercises: parsedQuickExercises };
 	} catch (error) {
 		console.error("Error parsing yaml string plan:", error);
 		throw error;
@@ -90,25 +100,41 @@ export function makeSteps(
 }
 
 export const defaultExercises = `version: 1
-
 exercises:
-  <exercise_id>:
-    name: "<Exercise Name>"
+  push-ups:
+    id: push-ups
+    name: Push-Ups
     steps:
-      - description: "<step 1 description>"
-	    completed: true
-      - description: "<step 2 description>"
-      - description: "<step 3 description>"
-
-# Example structure:
-# exercises:
-#   push-ups:
-#     name: "Push-Ups"
-#     steps:
-#       - description: "3 sets of 10 reps"
-#         completed: true
-#       - description: "3 sets of 6 reps"
-#         completed: true
-#       - description: "3 sets of 8 reps"
-#         completed: true
+      - id: step-0
+        description: 3 sets of 10 reps (Bent knees)
+        completed: false
+      - id: step-1
+        description: 3 sets of 6 reps
+        completed: false
+      - id: step-2
+        description: 3 sets of 8 reps
+        completed: false
+  squat:
+    id: squat
+    name: Squats
+    steps:
+      - id: step-0
+        description: 6 sets of 8 reps (40 kg)
+        completed: false
+      - id: step-1
+        description: 5 sets of 10 reps (40 kg)
+        completed: false
+      - id: step-2
+        description: 5 sets of 10 reps (44 kg)
+        completed: false
+quick-exercises:
+  - id: yoga
+    label: Yoga
+    emoji: 🧘
+  - id: stretching
+    label: Stretching
+    emoji: 🤸
+  - id: fisio
+    label: Esercizi per caviglia
+    emoji: 🦶🏼
 `;

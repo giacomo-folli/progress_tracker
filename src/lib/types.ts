@@ -16,12 +16,19 @@ export interface Exercise {
 	currentStepIndex: number;
 }
 
+export interface QuickExercise {
+	id: string;
+	label: string;
+	icon?: string;
+}
+
 /** Represents a snapshot of an exercise within a training session
  * , including the current step label. */
 export interface SessionExercise {
+	type: "exercise" | "quick-exeercise";
 	exerciseId: string;
 	exerciseName: string;
-	stepLabel: string;
+	stepLabel?: string;
 }
 
 /** Represents a completed training session with metadata and the

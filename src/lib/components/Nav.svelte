@@ -13,11 +13,11 @@
 	<a href={resolve("/exercises")} class="tab" class:active={isExercises}
 		>Esercizi</a
 	>
-	<a href={resolve("/settings")} class="tab" class:active={isSettings}
-		>Impostazioni</a
-	>
 	<a href={resolve("/analytics")} class="tab" class:active={isAnalytics}
 		>Analisi</a
+	>
+	<a href={resolve("/settings")} class="tab" class:active={isSettings}
+		>Impostazioni</a
 	>
 </nav>
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { exercises } from "$lib/stores/exercises";
+	import { quickExercises } from "$lib/stores/quickExercises";
 	import { sessions } from "$lib/stores/sessions";
 	import { StorageKeys } from "$lib/utils/enums";
 	import { parseYamlString } from "$lib/utils/parsing";
@@ -37,8 +38,12 @@
 
 		try {
 			// Apply the content to the store
-			const parsed = await parseYamlString(yamlText);
-			exercises.set(parsed ?? current_exercises);
+			const {
+				exercises: parsedExercises,
+				quickExercises: parsedQuickExercises,
+			} = parseYamlString(yamlText);
+			exercises.set(parsedExercises ?? current_exercises);
+			quickExercises.set(parsedQuickExercises ?? []);
 
 			alert("Configurazione applicata con successo!");
 		} catch {
@@ -69,8 +74,12 @@
 
 			localStorage.setItem(StorageKeys.CONFIG_FILE, fileContent);
 
-			const parsed = await parseYamlString(fileContent);
-			exercises.set(parsed ?? current_exercises);
+			const {
+				exercises: parsedExercises,
+				quickExercises: parsedQuickExercises,
+			} = parseYamlString(fileContent);
+			exercises.set(parsedExercises ?? current_exercises);
+			quickExercises.set(parsedQuickExercises ?? []);
 
 			yamlText = fileContent;
 			yamlDirty = true;

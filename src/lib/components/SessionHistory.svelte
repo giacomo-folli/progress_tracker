@@ -67,12 +67,22 @@
 					>
 				</div>
 				<div class="session-exercises" class:hidden={session.hidden}>
-					{#each session.exercises as ex}
+					{#each session.exercises.filter((e) => e.type == "exercise") as ex}
 						<li class="session-ex">
 							<span class="sex-name">{ex.exerciseName}</span>
 							<span class="sex-step">{ex.stepLabel}</span>
 						</li>
 					{/each}
+
+					<div class="session-ex">
+						<span class="sex-name">Quick exercises</span>
+						<span class="sex-step">
+							{session.exercises
+								?.filter((e) => e?.type && e.type == "quick-exeercise")
+								?.map((e) => e.exerciseName)
+								?.join(" - ")}
+						</span>
+					</div>
 				</div>
 			</li>
 		{/each}
