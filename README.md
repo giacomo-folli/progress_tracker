@@ -58,15 +58,16 @@ src/
 
 Because the app is deployed under a GitHub Pages subpath, internal routes use SvelteKit path resolution and the production base path is configured in `svelte.config.js`.
 
-## Next Steps
+## Guiding Principles
 
 Planned improvements for the project:
 
-- [x] Add support for PWA on mobile
-- [x] Dashboard and statistics
-- [ ] Custom exercise creation
-- [ ] Weekly schedule
-- [ ] Workout routines and grouped sessions
+- Optimize for local-micro competitions and winnability (competitive motivation)
+- Kudos, increase future run frequency 
+- Less feature is more
+- Streaks becomes motivation to obligation
+- Use random rewards
+- Encourage closing open loops [Gestalt's Principle]
 
 ## License
 

@@ -3,6 +3,7 @@
 	import { exercises } from "$lib/stores/exercises";
 	import { sessions } from "$lib/stores/sessions";
 	import type { SessionExercise } from "$lib/types";
+	import CelebrationOverlay from "$lib/components/CelebrationOverlay.svelte";
 
 	let program = $derived(
 		$exercises
@@ -17,7 +18,7 @@
 
 	let pastSessions = $derived($sessions.map((s) => ({ ...s, hidden: true })));
 
-	let logging = $state(false);
+	let celebrating = $state(false);
 
 	function handleDeleteSession(e: Event, id: string) {
 		e.stopPropagation();
@@ -35,9 +36,8 @@
 				return rest;
 			});
 
-		logging = true;
 		sessions.logSession(snapshot);
-		setTimeout(() => (logging = false), 1800);
+		celebrating = true;
 	}
 
 	function formatDate(iso: string) {
@@ -69,6 +69,12 @@
 	}
 </script>
 
+<!-- Celebration overlay (portal-like, fixed position) -->
+<CelebrationOverlay
+	visible={celebrating}
+	onDone={() => (celebrating = false)}
+/>
+
 <div class="training-layout">
 	<!-- LEFT: current program -->
 	<section class="col col-program">
@@ -79,11 +85,10 @@
 			</div>
 			<button
 				class="btn btn--primary btn-log"
-				class:logged={logging}
 				onclick={logSession}
-				disabled={program.length === 0 || logging}
+				disabled={program.length === 0 || celebrating}
 			>
-				{logging ? "✓ Salvato" : "Registra sessione"}
+				Registra sessione
 			</button>
 		</header>
 
@@ -250,17 +255,11 @@
 		flex-shrink: 0;
 	}
 
-	/* Log button state */
 	.btn-log {
 		flex-shrink: 0;
 	}
 
-	.btn-log.logged {
-		background: var(--color-muted);
-	}
-
 	/* History */
-
 	.session-list {
 		list-style: none;
 		margin: 0;
@@ -375,7 +374,7 @@
 		margin-bottom: 0 !important;
 	}
 
-	/* --- Mobile Responsiveness --- */
+	/* --- Mobile --- */
 	@media (max-width: 768px) {
 		.training-layout {
 			grid-template-columns: 1fr;
@@ -395,7 +394,7 @@
 
 		.ex-name,
 		.sex-name {
-			white-space: normal; /* Let text wrap naturally on smaller screens */
+			white-space: normal;
 			word-wrap: break-word;
 		}
 
