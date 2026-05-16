@@ -16,16 +16,8 @@
 			})),
 	);
 
-	let pastSessions = $derived($sessions.map((s) => ({ ...s, hidden: true })));
-
+	
 	let celebrating = $state(false);
-
-	function handleDeleteSession(e: Event, id: string) {
-		e.stopPropagation();
-		if (confirm("Questa azione eliminerà la sessione.\n\nContinuare?")) {
-			sessions.deleteSession(id);
-		}
-	}
 
 	function logSession() {
 		if (program.length === 0) return;
@@ -40,32 +32,30 @@
 		celebrating = true;
 	}
 
-	function formatDate(iso: string) {
-		const d = new Date(iso);
-		return d.toLocaleDateString("it-IT", {
-			weekday: "short",
-			day: "2-digit",
-			month: "short",
-			year: "numeric",
-		});
-	}
+	
 
-	function formatTime(iso: string) {
-		const d = new Date(iso);
-		return d.toLocaleTimeString("it-IT", {
-			hour: "2-digit",
-			minute: "2-digit",
-		});
-	}
+	// add inside your existing <script>
+	const quickExercises = [
+		{ id: "corsa", icon: "🏃", label: "Corsa" },
+		{ id: "bici", icon: "🚴", label: "Bicicletta" },
+		{ id: "nuoto", icon: "🏊", label: "Nuoto" },
+		{ id: "pesi", icon: "🏋️", label: "Pesi liberi" },
+		{ id: "yoga", icon: "🧘", label: "Yoga" },
+		{ id: "camminata", icon: "🚶", label: "Camminata" },
+		{ id: "calcio", icon: "⚽", label: "Calcio" },
+		{ id: "stretching", icon: "🤸", label: "Stretching" },
+		{ id: "corda", icon: "🪢", label: "Corda" },
+		{ id: "boxe", icon: "🥊", label: "Boxe" },
+	];
 
-	function toggleSessionInfo(id: string) {
-		const toggled = pastSessions.find((s) => s.id == id);
-		if (!toggled) return;
+	let selectedQuick = $state<Set<string>>(new Set());
 
-		pastSessions = pastSessions.map((s) => {
-			if (s.id == id) return { ...toggled, hidden: !toggled.hidden };
-			else return s;
-		});
+	function toggleQuick(id: string) {
+		selectedQuick = new Set(
+			selectedQuick.has(id)
+				? [...selectedQuick].filter((x) => x !== id)
+				: [...selectedQuick, id],
+		);
 	}
 </script>
 
@@ -113,53 +103,24 @@
 		</ol>
 	</section>
 
-	<!-- RIGHT: history -->
-	<section class="col col-history">
-		<header class="col-header">
-			<div>
-				<h2>Sessioni precedenti</h2>
-				<p class="col-sub">{$sessions.length} sessioni</p>
-			</div>
-		</header>
+	<hr class="quick-divider" />
 
-		{#if $sessions.length === 0}
-			<p class="empty">Nessuna sessione registrata.</p>
-		{:else}
-			<ul class="session-list">
-				{#each pastSessions as session (session.id)}
-					<li class="session-card">
-						<div
-							role="presentation"
-							class="session-header"
-							onclick={() => toggleSessionInfo(session.id)}
-						>
-							<div class="session-meta">
-								<span class="session-date"
-									>{formatDate(session.completedAt)}</span
-								>
-								<span class="session-time"
-									>{formatTime(session.completedAt)}</span
-								>
-							</div>
-
-							<button
-								class="btn btn-delete"
-								onclick={(e) => handleDeleteSession(e, session.id)}
-								aria-label="Elimina sessione">×</button
-							>
-						</div>
-						<div class="session-exercises" class:hidden={session.hidden}>
-							{#each session.exercises as ex}
-								<li class="session-ex">
-									<span class="sex-name">{ex.exerciseName}</span>
-									<span class="sex-step">{ex.stepLabel}</span>
-								</li>
-							{/each}
-						</div>
-					</li>
-				{/each}
-			</ul>
-		{/if}
+	<!-- Quick exercises -->
+	<section class="quick-section">
+		<p class="quick-label">Esercizi rapidi</p>
+		<div class="quick-grid">
+			{#each quickExercises as ex (ex.id)}
+				<button
+					class="quick-box"
+					class:active={selectedQuick.has(ex.id)}
+					onclick={() => toggleQuick(ex.id)}
+					aria-pressed={selectedQuick.has(ex.id)}
+				>
+					<span class="quick-icon" aria-hidden="true">{ex.icon}</span>
+					<span class="quick-label-text">{ex.label}</span>
+				</button>
+			{/each}
+		</div>
 	</section>
 </div>
 
@@ -259,121 +220,7 @@
 		flex-shrink: 0;
 	}
 
-	/* History */
-	.session-list {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-	}
-
-	.session-card {
-		background: var(--color-card);
-		border: 1px solid var(--color-border);
-		border-radius: 10px;
-		padding: 1rem 1.2rem;
-		opacity: 0.7;
-	}
-
-	.session-card:hover {
-		opacity: 1;
-	}
-
-	.session-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: 0.5rem;
-		cursor: pointer;
-	}
-
-	.session-meta {
-		display: flex;
-		flex-direction: column;
-		gap: 0.1rem;
-		min-width: 0;
-	}
-
-	.session-date {
-		font-size: 0.82rem;
-		font-weight: 600;
-		color: var(--color-text);
-		text-transform: capitalize;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
-	.session-time {
-		font-size: 0.72rem;
-		color: var(--color-muted);
-	}
-
-	.btn-delete {
-		background: none;
-		border: none;
-		color: var(--color-muted);
-		font-size: 1.1rem;
-		line-height: 1;
-		cursor: pointer;
-		padding: 0.2rem 0.3rem;
-		border-radius: 4px;
-		transition:
-			color 0.1s,
-			background 0.1s;
-		flex-shrink: 0;
-	}
-
-	.btn-delete:hover {
-		color: var(--color-text);
-		background: var(--color-track);
-	}
-
-	.session-exercises {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 0;
-	}
-
-	.session-ex {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		gap: 0.75rem;
-		padding: 0.35rem 0;
-		border-top: 1px solid var(--color-border);
-		font-size: 0.8rem;
-	}
-
-	.session-ex:first-child {
-		margin-top: 0.75rem;
-	}
-
-	.sex-name {
-		color: var(--color-muted);
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		min-width: 0;
-	}
-
-	.sex-step {
-		color: var(--color-text);
-		text-align: right;
-		font-size: 0.75rem;
-		flex-shrink: 0;
-	}
-
-	.hidden {
-		display: none;
-		margin-bottom: 0 !important;
-	}
-
+	
 	/* --- Mobile --- */
 	@media (max-width: 768px) {
 		.training-layout {
@@ -392,27 +239,81 @@
 			padding: 0.8rem 1rem;
 		}
 
-		.ex-name,
-		.sex-name {
+		.ex-name {
 			white-space: normal;
 			word-wrap: break-word;
 		}
 
-		.ex-step,
-		.sex-step {
+		.ex-step {
 			text-align: left;
 			font-size: 0.75rem;
 		}
+	}
 
-		.session-card {
-			padding: 0.8rem 1rem;
-		}
+	.quick-section {
+		/* margin-bottom: 1.5rem; */
+	}
 
-		.session-ex {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: 0.2rem;
-			padding: 0.5rem 0;
-		}
+	.quick-label {
+		margin: 0 0 0.75rem;
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-muted);
+	}
+
+	.quick-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+		gap: 0.5rem;
+	}
+
+	.quick-box {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.35rem;
+		padding: 0.75rem 0.5rem;
+		border-radius: 10px;
+		border: 1px solid var(--color-border);
+		background: var(--color-card);
+		cursor: pointer;
+		transition:
+			background 0.12s,
+			border-color 0.12s;
+	}
+
+	.quick-box:hover {
+		background: var(--color-track);
+	}
+
+	.quick-box.active {
+		background: var(--color-primary);
+		border-color: var(--color-primary);
+	}
+
+	.quick-box.active .quick-label-text {
+		color: #fff;
+	}
+
+	.quick-icon {
+		font-size: 1.4rem;
+		line-height: 1;
+	}
+
+	.quick-label-text {
+		font-size: 0.7rem;
+		font-weight: 500;
+		color: var(--color-text);
+		text-align: center;
+		line-height: 1.2;
+	}
+
+	.quick-divider {
+		border: none;
+		border-top: 1px solid var(--color-border);
+		margin: 0 0 2rem;
 	}
 </style>
