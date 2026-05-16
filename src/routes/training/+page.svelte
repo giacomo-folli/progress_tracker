@@ -88,22 +88,24 @@
 		</ol>
 	</section>
 
-	<section class="quick-section">
-		<p class="quick-label">Esercizi rapidi</p>
-		<div class="quick-grid">
-			{#each $quickExercises as ex (ex.id)}
-				<button
-					class="quick-box"
-					class:active={selectedQuick.has(ex.id)}
-					onclick={() => toggleQuick(ex)}
-					aria-pressed={selectedQuick.has(ex.id)}
-				>
-					<span class="quick-icon" aria-hidden="true">{ex.icon}</span>
-					<span class="quick-label-text">{ex.label}</span>
-				</button>
-			{/each}
-		</div>
-	</section>
+	{#if $quickExercises && $quickExercises.length > 0}
+		<section class="quick-section">
+			<p class="quick-label">Esercizi rapidi</p>
+			<div class="quick-grid">
+				{#each $quickExercises as ex (ex.id)}
+					<button
+						class="quick-box"
+						class:active={selectedQuick.has(ex.id)}
+						onclick={() => toggleQuick(ex)}
+						aria-pressed={selectedQuick.has(ex.id)}
+					>
+						<span class="quick-icon" aria-hidden="true">{ex.icon}</span>
+						<span class="quick-label-text">{ex.label}</span>
+					</button>
+				{/each}
+			</div>
+		</section>
+	{/if}
 
 	<section class="action-section">
 		<button

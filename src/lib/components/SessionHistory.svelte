@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { quickExercises } from "$lib/stores/quickExercises";
 	import { sessions } from "$lib/stores/sessions";
 
 	let pastSessions = $derived($sessions.map((s) => ({ ...s, hidden: true })));
@@ -49,6 +50,12 @@
 {:else}
 	<ul class="session-list">
 		{#each pastSessions as session (session.id)}
+			{@const sessionQuickExercises = session.exercises
+				?.filter((e) => e?.type && e.type == "quick-exeercise")
+				?.map((e) => e.exerciseName)}
+			{@const sessionExercises = session.exercises.filter(
+				(e) => !e.type || e.type == "exercise",
+			)}
 			<li class="session-card">
 				<div
 					role="presentation"
@@ -67,22 +74,21 @@
 					>
 				</div>
 				<div class="session-exercises" class:hidden={session.hidden}>
-					{#each session.exercises.filter((e) => !e.type || e.type == "exercise") as ex}
+					{#each sessionExercises as ex}
 						<li class="session-ex">
 							<span class="sex-name">{ex.exerciseName}</span>
 							<span class="sex-step">{ex.stepLabel}</span>
 						</li>
 					{/each}
 
-					<div class="session-ex">
-						<span class="sex-name">Quick exercises</span>
-						<span class="sex-step">
-							{session.exercises
-								?.filter((e) => e?.type && e.type == "quick-exeercise")
-								?.map((e) => e.exerciseName)
-								?.join(" - ")}
-						</span>
-					</div>
+					{#if sessionQuickExercises}
+						<div class="session-ex">
+							<span class="sex-name">Quick exercises</span>
+							<span class="sex-step">
+								{sessionQuickExercises?.join(" - ")}
+							</span>
+						</div>
+					{/if}
 				</div>
 			</li>
 		{/each}
