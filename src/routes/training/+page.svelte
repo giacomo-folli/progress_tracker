@@ -1,11 +1,9 @@
 <script lang="ts">
-	import { resolve } from "$app/paths";
 	import { exercises } from "$lib/stores/exercises";
 	import { sessions } from "$lib/stores/sessions";
 	import type { QuickExercise, SessionExercise } from "$lib/types";
 	import CelebrationOverlay from "$lib/components/CelebrationOverlay.svelte";
 	import { quickExercises } from "$lib/stores/quickExercises";
-	import SessionHistory from "$lib/components/SessionHistory.svelte";
 
 	let program = $derived(
 		$exercises
@@ -19,6 +17,17 @@
 	);
 
 	let selectedQuick = $state<Map<string, QuickExercise>>(new Map());
+	let selectedExercises = $state<
+		Map<
+			string,
+			{
+				exerciseId: string;
+				exerciseName: string;
+				stepLabel: string;
+				checked: boolean;
+			}
+		>
+	>(new Map());
 	let celebrating = $state(false);
 
 	function logSession() {
@@ -51,6 +60,21 @@
 
 		selectedQuick = new Map(selectedQuick.entries());
 	}
+
+	function toggleExercise(ex: {
+		exerciseId: string;
+		exerciseName: string;
+		stepLabel: string;
+		checked: boolean;
+	}) {
+		if (selectedExercises.has(ex.exerciseId)) {
+			selectedExercises.delete(ex.exerciseId);
+		} else {
+			selectedExercises.set(ex.exerciseId, ex);
+		}
+
+		selectedExercises = new Map(selectedExercises.entries());
+	}
 </script>
 
 <CelebrationOverlay
@@ -69,20 +93,18 @@
 
 		<ol class="program-list">
 			{#each program as item (item.exerciseId)}
-				<li class="program-item">
-					<a
-						href={resolve(`/exercises/${item.exerciseId}`)}
+				<li
+					class="program-item"
+					class:active={selectedExercises.has(item.exerciseId)}
+				>
+					<div
+						role="presentation"
 						class="program-link"
+						onclick={() => toggleExercise(item)}
 					>
 						<span class="ex-name">{item.exerciseName}</span>
 						<span class="ex-step">{item.stepLabel}</span>
-					</a>
-
-					<input
-						type="checkbox"
-						id={item.exerciseId}
-						bind:checked={item.checked}
-					/>
+					</div>
 				</li>
 			{/each}
 		</ol>
@@ -181,7 +203,7 @@
 		border-bottom: none;
 	}
 
-	input[type="checkbox"] {
+	/* input[type="checkbox"] {
 		width: 1.5rem;
 		height: 1.5rem;
 		min-width: 1.5rem;
@@ -190,7 +212,7 @@
 		cursor: pointer;
 		border-radius: 4px;
 	}
-
+ */
 	.program-link {
 		width: 100%;
 		display: flex;
@@ -211,7 +233,7 @@
 	.ex-name {
 		font-size: 1rem;
 		font-weight: 600;
-		color: var(--color-text);
+		color: inherit;
 		white-space: normal;
 		word-wrap: break-word;
 	}
@@ -261,11 +283,13 @@
 		background: var(--color-track, #2c2c2e);
 	}
 
+	.program-item.active,
 	.quick-box.active {
 		background: var(--color-accent, #2c974b);
 		border-color: var(--color-accent, #2c974b);
 	}
 
+	.program-item.active,
 	.quick-box.active .quick-label-text {
 		color: #ffffff;
 	}
