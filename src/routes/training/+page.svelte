@@ -226,9 +226,9 @@
 		transition: background 0.15s ease;
 	}
 
-	.program-link:hover {
+	/* .program-link:hover {
 		background: rgba(255, 255, 255, 0.05);
-	}
+	} */
 
 	.ex-name {
 		font-size: 1rem;
