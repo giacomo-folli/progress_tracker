@@ -54,7 +54,11 @@ button,
 	font-weight: 600;
 	cursor: pointer;
 	white-space: nowrap;
-	transition: background 0.15s ease, opacity 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+	transition:
+		background 0.15s ease,
+		opacity 0.15s ease,
+		color 0.15s ease,
+		border-color 0.15s ease;
 }
 
 button:disabled,
@@ -190,3 +194,15 @@ button:disabled,
 a {
 	color: inherit;
 }
+
+/* Hide scrollbar for Chrome, Safari, Edge, and Opera */
+/* -------------------------------------------------- */
+::-webkit-scrollbar {
+	display: none;
+}
+
+* {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+/* -------------------------------------------------- */
