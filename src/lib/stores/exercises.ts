@@ -94,7 +94,7 @@ function createExercisesStore() {
 					currentStepIndex: 0,
 				}));
 
-				saveExercises(newExercise);
+				saveExercises(newExercise, true);
 				return newExercise;
 			});
 		},

@@ -1,3 +1,5 @@
+import { quickExercises } from "$lib/stores/quickExercises";
+import { get } from "svelte/store";
 import type { Exercise, QuickExercise, TrainingSession } from "../types";
 import { StorageKeys } from "./enums";
 import { toYamlString } from "./parsing";
@@ -25,7 +27,10 @@ export function saveExercises(
 		);
 
 		if (persistToStorage) {
-			const updatedConfig = toYamlString(exercises);
+			const updatedConfig = toYamlString({
+				exercises,
+				quick: get(quickExercises),
+			});
 			localStorage.setItem(StorageKeys.CONFIG_FILE, updatedConfig);
 		}
 	} catch (error) {

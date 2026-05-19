@@ -1,9 +1,12 @@
 import type { Exercise, ExerciseDefinition, QuickExercise } from "../types";
 import { parse, stringify } from "yaml";
 
-export function toYamlString(exercises: Exercise[]): string {
+export function toYamlString(params: {
+	exercises: Exercise[];
+	quick?: QuickExercise[];
+}): string {
 	try {
-		const data = exercises.map((e) => {
+		const data = params.exercises.map((e) => {
 			const temp = { ...e } as any;
 			delete temp.currentStepIndex;
 			return temp;
@@ -12,6 +15,7 @@ export function toYamlString(exercises: Exercise[]): string {
 		return stringify({
 			version: 1,
 			exercises: Object.fromEntries(data.map((d) => [d.id, d])),
+			"quick-exercises": params.quick,
 		});
 	} catch (error) {
 		console.error("Error converting exercises to yaml string:", error);
