@@ -26,6 +26,12 @@
 		name="apple-mobile-web-app-status-bar-style"
 		content="black-translucent"
 	/>
+
+	<script
+		async
+		src="https://cdn.jsdelivr.net/npm/pwacompat"
+		crossorigin="anonymous"
+	></script>
 </svelte:head>
 
 <div class="shell">
