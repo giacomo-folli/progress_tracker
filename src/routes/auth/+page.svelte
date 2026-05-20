@@ -189,7 +189,7 @@
 	}
 
 	input:focus {
-		border-color: var(--color-text, #111);
+		border-color: var(--color-accent);
 	}
 
 	input:disabled {
@@ -264,7 +264,7 @@
 	}
 
 	.btn--primary {
-		background: var(--color-text, #111);
+		background: var(--color-accent);
 		color: var(--color-surface, #fff);
 		border: none;
 		font-weight: 500;
