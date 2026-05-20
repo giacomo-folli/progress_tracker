@@ -63,8 +63,8 @@
 					onclick={() => toggleSessionInfo(session.id)}
 				>
 					<div class="session-meta">
-						<span class="session-date">{formatDate(session.completedAt)}</span>
-						<span class="session-time">{formatTime(session.completedAt)}</span>
+						<span class="session-date">{formatDate(session.completed_at)}</span>
+						<span class="session-time">{formatTime(session.completed_at)}</span>
 					</div>
 
 					<button

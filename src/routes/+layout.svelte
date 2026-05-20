@@ -3,14 +3,33 @@
 	import Nav from "$lib/components/Nav.svelte";
 	import { pwaInfo } from "virtual:pwa-info";
 	import { onMount, type Snippet } from "svelte";
+	import { supabase } from "$lib/supabase";
+	import { page } from "$app/state";
+	import { goto } from "$app/navigation";
+	import { resolve } from "$app/paths";
 
 	let pwaWebManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : "");
 
-	onMount(async () => {
+	onMount(() => {
 		if (pwaInfo) {
-			const { registerSW } = await import("virtual:pwa-register");
-			registerSW({ immediate: true });
+			import("virtual:pwa-register").then(({ registerSW }) => {
+				registerSW({ immediate: true });
+			});
 		}
+
+		const {
+			data: { subscription },
+		} = supabase.auth.onAuthStateChange((event, session) => {
+			const currentRoute = page.url.pathname;
+			const isSignedIn = !!session;
+
+			if (!isSignedIn) goto(resolve("/auth"));
+			else if (currentRoute.includes("/auth")) goto(resolve("/training"));
+		});
+
+		return () => {
+			subscription.unsubscribe();
+		};
 	});
 
 	let { children }: { children: Snippet } = $props();

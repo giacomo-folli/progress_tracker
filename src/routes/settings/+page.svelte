@@ -1,95 +1,91 @@
 <script lang="ts">
 	import { exercises } from "$lib/stores/exercises";
-	import { quickExercises } from "$lib/stores/quickExercises";
 	import { sessions } from "$lib/stores/sessions";
-	import { StorageKeys } from "$lib/utils/enums";
-	import { parseYamlString } from "$lib/utils/parsing";
-	import { loadExercises } from "$lib/utils/storage";
-	import { onMount } from "svelte";
+	// import { loadExercises } from "$lib/utils/storage";
 
-	const current_exercises = loadExercises() ?? [];
+	// const current_exercises = loadExercises() ?? [];
 
 	let loading = $state(false);
-	let yamlText = $state("");
-	let yamlSaved = $state(true);
-	let yamlDirty = $state(false);
+	// let yamlText = $state("");
+	// let yamlSaved = $state(true);
+	// let yamlDirty = $state(false);
 
 	// Load from localStorage on mount
-	onMount(() => {
-		yamlText = localStorage?.getItem(StorageKeys.CONFIG_FILE) ?? "";
-		yamlSaved = !!localStorage?.getItem(StorageKeys.CONFIG_FILE);
-	});
+	// onMount(() => {
+	// 	yamlText = localStorage?.getItem(StorageKeys.CONFIG_FILE) ?? "";
+	// 	yamlSaved = !!localStorage?.getItem(StorageKeys.CONFIG_FILE);
+	// });
 
-	function handleTextareaChange() {
-		yamlSaved = false;
-		yamlDirty = true;
-	}
+	// function handleTextareaChange() {
+	// 	yamlSaved = false;
+	// 	yamlDirty = true;
+	// }
 
-	async function handleLoadFromTextarea() {
-		if (!yamlText.trim()) {
-			alert("Il campo YAML è vuoto.");
-			return;
-		}
+	// async function handleLoadFromTextarea() {
+	// 	if (!yamlText.trim()) {
+	// 		alert("Il campo YAML è vuoto.");
+	// 		return;
+	// 	}
 
-		// Save to storage the textarea content
-		localStorage.setItem(StorageKeys.CONFIG_FILE, yamlText);
-		yamlSaved = true;
-		yamlDirty = false;
+	// 	// Save to storage the textarea content
+	// 	localStorage.setItem(StorageKeys.CONFIG_FILE, yamlText);
+	// 	yamlSaved = true;
+	// 	yamlDirty = false;
 
-		try {
-			// Apply the content to the store
-			const {
-				exercises: parsedExercises,
-				quickExercises: parsedQuickExercises,
-			} = parseYamlString(yamlText);
+	// 	try {
+	// 		// Apply the content to the store
+	// 		const {
+	// 			exercises: parsedExercises,
+	// 			quickExercises: parsedQuickExercises,
+	// 		} = parseYamlString(yamlText);
 
-			exercises.set(parsedExercises ?? current_exercises);
-			quickExercises.set(parsedQuickExercises ?? []);
+	// 		exercises.set(parsedExercises ?? current_exercises);
+	// 		quickExercises.set(parsedQuickExercises ?? []);
 
-			alert("Configurazione applicata con successo!");
-		} catch {
-			yamlSaved = false;
-			yamlDirty = true;
+	// 		alert("Configurazione applicata con successo!");
+	// 	} catch {
+	// 		yamlSaved = false;
+	// 		yamlDirty = true;
 
-			alert("Errore nel parsing del YAML.");
-		}
-	}
+	// 		alert("Errore nel parsing del YAML.");
+	// 	}
+	// }
 
 	// --- TEMPLATE ---
-	async function copyYaml() {
-		try {
-			await navigator.clipboard.writeText(yamlText);
-			alert("Testo copiato!");
-		} catch {
-			alert("Errore nella copia.");
-		}
-	}
+	// async function copyYaml() {
+	// 	try {
+	// 		await navigator.clipboard.writeText(yamlText);
+	// 		alert("Testo copiato!");
+	// 	} catch {
+	// 		alert("Errore nella copia.");
+	// 	}
+	// }
 
 	// --- FILE UPLOAD ---
-	async function handleFileUpload(event: Event) {
-		const target = event.target as HTMLInputElement;
-		const file = target.files?.[0];
-		if (!file) return;
-		try {
-			const fileContent = await file.text();
+	// async function handleFileUpload(event: Event) {
+	// 	const target = event.target as HTMLInputElement;
+	// 	const file = target.files?.[0];
+	// 	if (!file) return;
+	// 	try {
+	// 		const fileContent = await file.text();
 
-			localStorage.setItem(StorageKeys.CONFIG_FILE, fileContent);
+	// 		localStorage.setItem(StorageKeys.CONFIG_FILE, fileContent);
 
-			const {
-				exercises: parsedExercises,
-				quickExercises: parsedQuickExercises,
-			} = parseYamlString(fileContent);
-			exercises.set(parsedExercises ?? current_exercises);
-			quickExercises.set(parsedQuickExercises ?? []);
+	// 		const {
+	// 			exercises: parsedExercises,
+	// 			quickExercises: parsedQuickExercises,
+	// 		} = parseYamlString(fileContent);
+	// 		exercises.set(parsedExercises ?? current_exercises);
+	// 		quickExercises.set(parsedQuickExercises ?? []);
 
-			yamlText = fileContent;
-			yamlDirty = true;
-			yamlSaved = false;
-			alert("File caricato. Salva nella sezione YAML se vuoi conservarlo.");
-		} catch {
-			alert("Errore nella lettura del file YAML.");
-		}
-	}
+	// 		yamlText = fileContent;
+	// 		yamlDirty = true;
+	// 		yamlSaved = false;
+	// 		alert("File caricato. Salva nella sezione YAML se vuoi conservarlo.");
+	// 	} catch {
+	// 		alert("Errore nella lettura del file YAML.");
+	// 	}
+	// }
 
 	// --- DANGER ZONE ---
 	async function handleResetProgress() {
@@ -117,7 +113,7 @@
 
 <div class="settings-container">
 	<!-- SEZIONE 1: YAML Editor -->
-	<section class="card yaml-section">
+	<!-- <section class="card yaml-section">
 		<div class="section-header">
 			<span class="section-title">Configurazione YAML</span>
 			{#if yamlSaved}
@@ -152,10 +148,10 @@
 				>
 			</div>
 		</div>
-	</section>
+	</section> -->
 
 	<!-- SEZIONE 2: File upload -->
-	<section class="card">
+	<!-- <section class="card">
 		<div class="section-header">
 			<span class="section-title">Carica da file</span>
 		</div>
@@ -167,7 +163,7 @@
 			<input type="file" accept=".yaml" onchange={handleFileUpload} />
 			<span class="file-cta">Scegli file .yaml</span>
 		</label>
-	</section>
+	</section> -->
 
 	<!-- SEZIONE 3: Danger zone -->
 	<section class="card danger-card">

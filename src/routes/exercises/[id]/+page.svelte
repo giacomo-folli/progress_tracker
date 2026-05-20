@@ -4,7 +4,6 @@
 	import { exercises } from "$lib/stores/exercises";
 	import { page } from "$app/state";
 	import type { Exercise } from "$lib/types";
-	import { resolve } from "$app/paths";
 
 	const id = $state(page.params.id);
 
@@ -17,16 +16,16 @@
 	});
 
 	let completedCount = $derived(
-		exercise?.steps.filter((s) => s.completed).length ?? 0,
+		exercise?.steps?.filter((s) => s.completed).length ?? 0,
 	);
-	let total = $derived(exercise?.steps.length ?? 0);
+	let total = $derived(exercise?.steps?.length ?? 0);
 	let isComplete = $derived(completedCount === total);
 	let pct = $derived(
 		total === 0 ? 0 : Math.round((completedCount / total) * 100),
 	);
 
 	let currentStep = $derived(
-		exercise?.steps[exercise.currentStepIndex] ?? null,
+		exercise?.steps?.[exercise.current_step_index!] ?? null,
 	);
 	let hasCompleted = $derived((exercise?.steps ?? []).some((s) => s.completed));
 
@@ -83,10 +82,12 @@
 				{/if}
 			</div>
 			<div class="steps-section-card">
-				<StepList
-					steps={exercise.steps}
-					currentStepIndex={exercise.currentStepIndex}
-				/>
+				{#if exercise.steps && exercise.current_step_index !== undefined}
+					<StepList
+						steps={exercise.steps}
+						currentStepIndex={exercise.current_step_index}
+					/>
+				{/if}
 			</div>
 		</section>
 	</div>

@@ -1,45 +1,42 @@
 import { writable } from "svelte/store";
-import type { TrainingSession, SessionExercise } from "../types";
-import { loadSessions, saveSessions } from "../utils/storage";
-import { hashString } from "$lib/utils/hash";
+import type { Exercise, TrainingSession } from "../types";
+// import { loadSessions, saveSessions } from "../utils/storage";
 
 function createSessionsStore() {
-	const initial = loadSessions() ?? [];
-	const { subscribe, update, set } = writable<TrainingSession[]>(initial);
+	// const initial = loadSessions() ?? [];
+	const { subscribe, update, set } = writable<TrainingSession[]>([]);
 
 	return {
 		subscribe,
 
-		async logSession(exercises: SessionExercise[]) {
-			const stringId = exercises
-				.map((e) => e.exerciseName + ":" + e.stepLabel)
-				.join("||");
-			const hash = await hashString(stringId);
+		async logSession(exercises: Exercise[]) {
+			let next: TrainingSession[] = [];
 
 			const session: TrainingSession = {
-				id: crypto.randomUUID(),
-				completedAt: new Date().toISOString(),
-				version: hash,
+				completed_at: new Date().toISOString(),
 				exercises,
 			};
 			update((sessions) => {
-				const next = [session, ...sessions];
-				saveSessions(next);
+				next = [session, ...sessions];
 				return next;
 			});
+
+			// saveSessions(next);
 		},
 
 		deleteSession(id: string) {
+			let next: TrainingSession[] = [];
 			update((sessions) => {
-				const next = sessions.filter((s) => s.id !== id);
-				saveSessions(next);
+				next = sessions.filter((s) => s.id !== id);
 				return next;
 			});
+
+			// saveSessions(next);
 		},
 
 		clearSessions() {
 			set([]);
-			saveSessions([]);
+			// saveSessions([]);
 		},
 	};
 }

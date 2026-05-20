@@ -3,10 +3,14 @@
 
 	let { steps, currentStepIndex }: { steps: Step[]; currentStepIndex: number } =
 		$props();
+
+	const orderedSteps = $derived(
+		steps.toSorted((a, b) => a.step_index - b.step_index),
+	);
 </script>
 
 <ol class="step-list">
-	{#each steps as step, i}
+	{#each orderedSteps as step, i}
 		{@const state = step.completed
 			? "completed"
 			: i === currentStepIndex
@@ -37,9 +41,9 @@
 				{/if}
 			</span>
 			<span class="step-text">{step.description}</span>
-			{#if step.completedAt}
+			{#if step.completed_at}
 				<span class="step-date"
-					>{new Date(step.completedAt).toLocaleDateString("it-IT", {
+					>{new Date(step.completed_at).toLocaleDateString("it-IT", {
 						day: "2-digit",
 						month: "short",
 					})}</span

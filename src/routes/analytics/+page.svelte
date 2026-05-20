@@ -3,13 +3,17 @@
 	import { exercises } from "$lib/stores/exercises";
 	import { sessions } from "$lib/stores/sessions";
 
+	const filteredExercises = $derived(
+		$exercises.filter((e) => e.type === "exercise"),
+	);
+
 	// ─── overall exercise completion ───────────────────────────────────────────
 	const totalSteps = $derived(
-		$exercises.reduce((s, ex) => s + ex.steps.length, 0),
+		filteredExercises.reduce((s, ex) => s + Number(ex.steps?.length), 0),
 	);
 	const completedSteps = $derived(
-		$exercises.reduce(
-			(s, ex) => s + ex.steps.filter((st) => st.completed).length,
+		filteredExercises.reduce(
+			(s, ex) => s + Number(ex.steps?.filter((st) => st.completed)?.length),
 			0,
 		),
 	);
@@ -17,23 +21,26 @@
 		totalSteps === 0 ? 0 : Math.round((completedSteps / totalSteps) * 100),
 	);
 	const fullyDoneExercises = $derived(
-		$exercises.filter((ex) => ex.steps.every((s) => s.completed)).length,
+		filteredExercises.filter((ex) => ex.steps?.every((s) => s.completed))
+			.length,
 	);
 
 	// ─── per-exercise stats ────────────────────────────────────────────────────
 	const exerciseStats = $derived(
-		$exercises.map((ex) => {
-			const done = ex.steps.filter((s) => s.completed).length;
+		filteredExercises.map((ex) => {
+			const done = Number(ex.steps?.filter((s) => s.completed).length);
 			const pct =
-				ex.steps.length === 0 ? 0 : Math.round((done / ex.steps.length) * 100);
+				ex.steps?.length === 0
+					? 0
+					: Math.round((done / Number(ex.steps?.length)) * 100);
 			const timesPerformed = $sessions.filter((ses) =>
-				ses.exercises.some((e) => e.exerciseId === ex.id),
+				ses.exercises.some((e) => e.id === ex.id),
 			).length;
 			return {
 				id: ex.id,
 				name: ex.name,
 				done,
-				total: ex.steps.length,
+				total: Number(ex.steps?.length),
 				pct,
 				timesPerformed,
 			};
@@ -59,7 +66,7 @@
 	const weeklyBuckets = $derived(() => {
 		const map = new Map<string, number>();
 		for (const s of $sessions) {
-			const k = getWeekKey(s.completedAt);
+			const k = getWeekKey(s.completed_at);
 			map.set(k, (map.get(k) ?? 0) + 1);
 		}
 		const weeks: { label: string; count: number }[] = [];
@@ -79,7 +86,7 @@
 
 	function weeksActive(): number {
 		if ($sessions.length === 0) return 1;
-		const oldest = new Date($sessions[$sessions.length - 1].completedAt);
+		const oldest = new Date($sessions[$sessions.length - 1].completed_at);
 		const diffMs = Date.now() - oldest.getTime();
 		return Math.max(1, Math.ceil(diffMs / (7 * 86400000)));
 	}
@@ -95,7 +102,7 @@
 	// 	const days = [
 	// 		...new Set(
 	// 			$sessions.map((s) =>
-	// 				new Date(s.completedAt).toISOString().slice(0, 10),
+	// 				new Date(s.completed_at).toISOString().slice(0, 10),
 	// 			),
 	// 		),
 	// 	].sort();
@@ -118,7 +125,7 @@
 	// 	const days = [
 	// 		...new Set(
 	// 			$sessions.map((s) =>
-	// 				new Date(s.completedAt).toISOString().slice(0, 10),
+	// 				new Date(s.completed_at).toISOString().slice(0, 10),
 	// 			),
 	// 		),
 	// 	]
@@ -142,7 +149,7 @@
 
 	const lastSessionDate = $derived(
 		$sessions.length > 0
-			? new Date($sessions[0].completedAt).toLocaleDateString("it-IT", {
+			? new Date($sessions[0].completed_at).toLocaleDateString("it-IT", {
 					weekday: "short",
 					day: "2-digit",
 					month: "short",
@@ -153,7 +160,7 @@
 	const daysSinceLast = $derived(
 		$sessions.length > 0
 			? Math.floor(
-					(Date.now() - new Date($sessions[0].completedAt).getTime()) /
+					(Date.now() - new Date($sessions[0].completed_at).getTime()) /
 						86400000,
 				)
 			: null,
@@ -192,19 +199,19 @@
 
 			<div class="stat-card">
 				<span class="stat-value"
-					>{fullyDoneExercises}/{String($exercises.length)}</span
+					>{fullyDoneExercises}/{String(filteredExercises.length)}</span
 				>
 				<span class="stat-label">Esercizi completati</span>
 				<div class="mini-bar-track">
 					<div
 						class="mini-bar-fill"
-						style="width:{$exercises.length === 0
+						style="width:{filteredExercises.length === 0
 							? 0
-							: Math.round((fullyDoneExercises / $exercises.length) * 100)}%"
+							: Math.round((fullyDoneExercises / filteredExercises.length) * 100)}%"
 					></div>
 				</div>
 				<span class="stat-sub"
-					>{$exercises.length - fullyDoneExercises} ancora in corso</span
+					>{filteredExercises.length - fullyDoneExercises} ancora in corso</span
 				>
 			</div>
 

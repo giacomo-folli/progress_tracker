@@ -1,80 +1,86 @@
-import type { Exercise, ExerciseDefinition, QuickExercise } from "../types";
+import type { Exercise } from "../types";
 import { parse, stringify } from "yaml";
 
-export function toYamlString(params: {
-	exercises: Exercise[];
-	quick?: QuickExercise[];
-}): string {
-	try {
-		const data = params.exercises.map((e) => {
-			const temp = { ...e } as any;
-			delete temp.currentStepIndex;
-			return temp;
-		});
+// export function toYamlString(params: {
+// 	exercises: Exercise[];
+// 	quick?: QuickExercise[];
+// }): string {
+// 	try {
+// 		const data = params.exercises.map((e) => {
+// 			const temp = { ...e } as any;
+// 			delete temp.currentStepIndex;
+// 			return temp;
+// 		});
 
-		return stringify({
-			version: 1,
-			exercises: Object.fromEntries(data.map((d) => [d.id, d])),
-			"quick-exercises": params.quick,
-		});
-	} catch (error) {
-		console.error("Error converting exercises to yaml string:", error);
-		throw error;
-	}
-}
+// 		return stringify({
+// 			version: 1,
+// 			exercises: Object.fromEntries(data.map((d) => [d.id, d])),
+// 			"quick-exercises": params.quick,
+// 		});
+// 	} catch (error) {
+// 		console.error("Error converting exercises to yaml string:", error);
+// 		throw error;
+// 	}
+// }
 
-export function parseYamlString(string: string = ""): {
-	exercises: Exercise[];
-	quickExercises?: QuickExercise[];
-} {
-	try {
-		const parsedData = parse(string) as {
-			version: number;
-			exercises: Record<string, ExerciseDefinition>;
-			"quick-exercises"?: {
-				id: string;
-				label: string;
-				emoji?: string;
-			}[];
-		};
+// export function parseYamlString(string: string = ""): {
+// 	exercises: Exercise[];
+// 	quickExercises?: QuickExercise[];
+// } {
+// 	try {
+// 		const parsedData = parse(string) as {
+// 			version: number;
+// 			exercises: Record<string, ExerciseDefinition>;
+// 			"quick-exercises"?: {
+// 				id: string;
+// 				label: string;
+// 				emoji?: string;
+// 			}[];
+// 		};
 
-		if (!parsedData || !parsedData.exercises) {
-			throw new Error("Invalid YAML structure: 'exercises' object is missing.");
-		}
+// 		if (!parsedData || !parsedData.exercises) {
+// 			throw new Error("Invalid YAML structure: 'exercises' object is missing.");
+// 		}
 
-		const parsedExercises = Object.entries(parsedData.exercises);
-		const parsedQuickExercises = parsedData?.["quick-exercises"] ?? [];
+// 		const parsedExercises = Object.entries(parsedData.exercises);
+// 		const parsedQuickExercises = parsedData?.["quick-exercises"] ?? [];
 
-		const exercisesArray: Exercise[] = parsedExercises.map(([key, data]) => {
-			let lastCompletedStepIndex = data.steps.findLastIndex(
-				(s) => s?.completed === true,
-			);
-			let firstUncompletedStep = 0;
+// 		const exercisesArray: Exercise[] = parsedExercises.map(([key, data]) => {
+// 			let lastCompletedStepIndex = data.steps.findLastIndex(
+// 				(s) => s?.completed === true,
+// 			);
+// 			let firstUncompletedStep = 0;
 
-			if (lastCompletedStepIndex !== -1) {
-				firstUncompletedStep =
-					lastCompletedStepIndex + 1 < data.steps.length
-						? lastCompletedStepIndex + 1
-						: lastCompletedStepIndex;
-			}
+// 			if (lastCompletedStepIndex !== -1) {
+// 				firstUncompletedStep =
+// 					lastCompletedStepIndex + 1 < data.steps.length
+// 						? lastCompletedStepIndex + 1
+// 						: lastCompletedStepIndex;
+// 			}
 
-			return {
-				id: key,
-				name: data.name,
-				steps: makeSteps(data.steps, firstUncompletedStep),
-				currentStepIndex: firstUncompletedStep,
-			} as Exercise;
-		});
+// 			return {
+// 				id: key,
+// 				name: data.name,
+// 				steps: makeSteps(data.steps, firstUncompletedStep),
+// 				currentStepIndex: firstUncompletedStep,
+// 			} as Exercise;
+// 		});
 
-		return { exercises: exercisesArray, quickExercises: parsedQuickExercises };
-	} catch (error) {
-		console.error("Error parsing yaml string plan:", error);
-		throw error;
-	}
-}
+// 		return { exercises: exercisesArray, quickExercises: parsedQuickExercises };
+// 	} catch (error) {
+// 		console.error("Error parsing yaml string plan:", error);
+// 		throw error;
+// 	}
+// }
 
 export function makeSteps(
-	steps: ExerciseDefinition["steps"],
+	steps: {
+		id: string;
+		description: string;
+		completed: boolean;
+		completed_at?: string;
+		step_index?: number;
+	}[],
 	lastCompletedStepIndex: number,
 ) {
 	let allComplete = false;
@@ -84,20 +90,20 @@ export function makeSteps(
 
 	const stepsFormatted = steps.map((item, i) => {
 		const completed = allComplete || i < lastCompletedStepIndex;
-		let completedAt = undefined;
-		if (completed && item?.completedAt) {
+		let completed_at = undefined;
+		if (completed && item?.completed_at) {
 			const raw =
-				typeof (item.completedAt as unknown) === "string"
-					? item.completedAt
-					: item.completedAt.toString();
-			completedAt = new Date(raw).toISOString();
+				typeof (item.completed_at as unknown) === "string"
+					? item.completed_at
+					: item.completed_at.toString();
+			completed_at = new Date(raw).toISOString();
 		}
 
 		return {
 			id: `step-${i}`,
 			description: item.description,
 			completed: completed,
-			completedAt: completedAt,
+			completed_at: completed_at,
 		};
 	});
 	return stepsFormatted;

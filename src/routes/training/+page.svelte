@@ -1,38 +1,48 @@
 <script lang="ts">
 	import { exercises } from "$lib/stores/exercises";
 	import { sessions } from "$lib/stores/sessions";
-	import type { QuickExercise, SessionExercise } from "$lib/types";
 	import CelebrationOverlay from "$lib/components/CelebrationOverlay.svelte";
-	import { quickExercises } from "$lib/stores/quickExercises";
+	import type { Exercise } from "$lib/types";
 
-	let program = $derived(
-		$exercises
-			.filter((ex) => ex.currentStepIndex < ex.steps.length)
+	type SessionExercise = {
+		id: string;
+		name: string;
+		icon?: string;
+		step_label?: string;
+		checked: boolean;
+	};
+
+	let quickExercises = $derived(
+		($exercises ?? [])
+			.filter((ex) => ex.type === "quick-exercise")
 			.map((ex) => ({
-				exerciseId: ex.id,
-				exerciseName: ex.name,
-				stepLabel: ex.steps[ex.currentStepIndex]?.description ?? "—",
+				...ex,
 				checked: true,
 			})),
 	);
 
-	let selectedQuick = $state<Map<string, QuickExercise>>(new Map());
-	let selectedExercises = $state<
-		Map<
-			string,
-			{
-				exerciseId: string;
-				exerciseName: string;
-				stepLabel: string;
-				checked: boolean;
-			}
-		>
-	>(new Map());
+	let program = $derived(
+		($exercises ?? [])
+			.filter((ex) => {
+				if (ex.type !== "exercise" || !ex.steps) return false;
+				const currentIndex = ex.current_step_index ?? 0;
+				return currentIndex < ex.steps.length;
+			})
+			.map((ex) => ({
+				id: ex.id,
+				name: ex.name,
+				step_label: ex.steps?.[ex.current_step_index ?? 0]?.description ?? "—",
+				checked: true,
+			})),
+	);
+
+	let selectedQuick = $state<Map<string, SessionExercise>>(new Map());
+	let selectedExercises = $state<Map<string, SessionExercise>>(new Map());
 	let celebrating = $state(false);
 
 	function logSession() {
 		if (program.length === 0) return;
-		const snapshot: SessionExercise[] = program
+		const snapshot: Exercise[] = program
 			.filter((ex) => ex.checked)
 			.map((p) => {
 				const { checked, ...rest } = p;
@@ -41,9 +51,9 @@
 
 		selectedQuick.forEach((val) => {
 			snapshot.push({
-				exerciseId: val.id,
-				exerciseName: val.label,
-				type: "quick-exeercise",
+				id: val.id,
+				name: val.name,
+				type: "quick-exercise",
 			});
 		});
 
@@ -51,7 +61,7 @@
 		celebrating = true;
 	}
 
-	function toggleQuick(qEx: QuickExercise) {
+	function toggleQuick(qEx: SessionExercise) {
 		if (selectedQuick.has(qEx.id)) {
 			selectedQuick.delete(qEx.id);
 		} else {
@@ -61,16 +71,11 @@
 		selectedQuick = new Map(selectedQuick.entries());
 	}
 
-	function toggleExercise(ex: {
-		exerciseId: string;
-		exerciseName: string;
-		stepLabel: string;
-		checked: boolean;
-	}) {
-		if (selectedExercises.has(ex.exerciseId)) {
-			selectedExercises.delete(ex.exerciseId);
+	function toggleExercise(ex: SessionExercise) {
+		if (selectedExercises.has(ex.id)) {
+			selectedExercises.delete(ex.id);
 		} else {
-			selectedExercises.set(ex.exerciseId, ex);
+			selectedExercises.set(ex.id, ex);
 		}
 
 		selectedExercises = new Map(selectedExercises.entries());
@@ -92,29 +97,26 @@
 		</header>
 
 		<ol class="program-list">
-			{#each program as item (item.exerciseId)}
-				<li
-					class="program-item"
-					class:active={selectedExercises.has(item.exerciseId)}
-				>
+			{#each program as item (item.id)}
+				<li class="program-item" class:active={selectedExercises.has(item.id)}>
 					<div
 						role="presentation"
 						class="program-link"
 						onclick={() => toggleExercise(item)}
 					>
-						<span class="ex-name">{item.exerciseName}</span>
-						<span class="ex-step">{item.stepLabel}</span>
+						<span class="ex-name">{item.name}</span>
+						<span class="ex-step">{item.step_label}</span>
 					</div>
 				</li>
 			{/each}
 		</ol>
 	</section>
 
-	{#if $quickExercises && $quickExercises.length > 0}
+	{#if quickExercises && quickExercises.length > 0}
 		<section class="quick-section">
 			<p class="quick-label">Esercizi rapidi</p>
 			<div class="quick-grid">
-				{#each $quickExercises as ex (ex.id)}
+				{#each quickExercises as ex (ex.id)}
 					<button
 						class="quick-box"
 						class:active={selectedQuick.has(ex.id)}
@@ -122,7 +124,7 @@
 						aria-pressed={selectedQuick.has(ex.id)}
 					>
 						<span class="quick-icon" aria-hidden="true">{ex.icon}</span>
-						<span class="quick-label-text">{ex.label}</span>
+						<span class="quick-label-text">{ex.name}</span>
 					</button>
 				{/each}
 			</div>

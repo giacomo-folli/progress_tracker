@@ -4,23 +4,20 @@
 	import ProgressBar from "./ProgressBar.svelte";
 
 	const totalSteps = $derived.by(() =>
-		$exercises.reduce((prev, curr) => prev + curr.steps.length, 0),
+		$exercises.reduce((prev, curr) => prev + Number(curr.steps?.length), 0),
 	);
 	const completedSteps = $derived.by(() =>
 		$exercises.reduce(
-			(prev, curr) => prev + curr.steps.filter((s) => s.completed).length,
+			(prev, curr) =>
+				prev + Number(curr.steps?.filter((s) => s.completed)?.length),
 			0,
 		),
 	);
 	const exercisesCompleted = $derived.by(
-		() =>
-			$exercises.filter((ex) => ex.steps.every((s) => s.completed))
-				.length,
+		() => $exercises.filter((ex) => ex.steps?.every((s) => s.completed)).length,
 	);
 	const exercisesStarted = $derived.by(
-		() =>
-			$exercises.filter((ex) => ex.steps.some((s) => !s.completed))
-				.length,
+		() => $exercises.filter((ex) => ex.steps?.some((s) => !s.completed)).length,
 	);
 
 	const overallPercent = $derived(
@@ -33,13 +30,12 @@
 
 		if ($exercises) {
 			for (const ex of $exercises) {
-				for (const step of ex.steps) {
-					if (!step.completedAt) continue;
+				for (const step of ex.steps || []) {
+					if (!step.completed_at) continue;
 
 					if (
-						!latest?.completedAt ||
-						new Date(latest.completedAt) <
-							new Date(step.completedAt)
+						!latest?.completed_at ||
+						new Date(latest.completed_at) < new Date(step.completed_at)
 					) {
 						latest = { ...step, exercise: ex };
 					}
@@ -51,8 +47,8 @@
 	});
 
 	let formattedDate = $derived(
-		lastCompleted?.completedAt
-			? new Date(lastCompleted.completedAt).toLocaleDateString("it-IT", {
+		lastCompleted?.completed_at
+			? new Date(lastCompleted.completed_at).toLocaleDateString("it-IT", {
 					day: "numeric",
 					month: "short",
 				})

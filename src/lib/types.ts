@@ -3,8 +3,8 @@ export interface Step {
 	id: string;
 	description: string;
 	completed: boolean;
-	completedAt?: string;
-	exercise?: Exercise;
+	completed_at?: string;
+	step_index: number;
 }
 
 /** Represents an exercise in a training program, including
@@ -12,43 +12,16 @@ export interface Step {
 export interface Exercise {
 	id: string;
 	name: string;
-	steps: Step[];
-	currentStepIndex: number;
-}
-
-export interface QuickExercise {
-	id: string;
-	label: string;
 	icon?: string;
-}
-
-/** Represents a snapshot of an exercise within a training session
- * , including the current step label. */
-export interface SessionExercise {
-	type: "exercise" | "quick-exeercise";
-	exerciseId: string;
-	exerciseName: string;
-	stepLabel?: string;
+	steps?: Step[];
+	current_step_index?: number;
+	type: "exercise" | "quick-exercise";
 }
 
 /** Represents a completed training session with metadata and the
  * exercises included in that session. */
 export interface TrainingSession {
-	id: string;
-	version: string;
-	completedAt: string;
-	exercises: SessionExercise[];
-}
-
-/** Represents the definition of an exercise parsed from a YAML file.
- * @param name name of the exercise
- * @param steps array of ordered steps
- */
-export interface ExerciseDefinition {
-	name: string;
-	steps: {
-		description: string;
-		completed?: boolean;
-		completedAt?: string;
-	}[];
+	id?: string;
+	completed_at: string;
+	exercises: Exercise[];
 }

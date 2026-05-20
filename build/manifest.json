@@ -1,0 +1,72 @@
+{
+    "name": "Prossima",
+    "short_name": "Prossima",
+    "description": "Track your training progress.",
+    "start_url": "/prossima",
+    "scope": "/prossima/",
+    "scope_extensions": [],
+    "shortcuts": [],
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2d6a4f",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/prossima/icon-64.png",
+            "sizes": "64x64",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/prossima/icon-180.png",
+            "sizes": "180x180",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/prossima/icon-1024.png",
+            "sizes": "1024x1024",
+            "type": "image/png",
+            "purpose": "any"
+        }
+        ,
+        {
+            "src": "/prossima/icon-512-maskable.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/prossima/screenshots/screenshot-1.png",
+            "sizes": "1170x2532",
+            "type": "image/png",
+            "platform": "ios",
+            "form_factor": "narrow"
+        },
+        {
+            "src": "/prossima/screenshots/screenshot-2.png",
+            "sizes": "1170x2532",
+            "type": "image/png",
+            "platform": "ios",
+            "form_factor": "narrow"
+        },
+        {
+            "src": "/prossima/screenshots/screenshot-3.png",
+            "sizes": "1170x2532",
+            "type": "image/png",
+            "platform": "ios",
+            "form_factor": "narrow"
+        }
+    ],
+    "id": "com.giacomofolli.prossima",
+    "dir": "ltr",
+    "lang": "it",
+    "categories": [
+        "fitness",
+        "lifestyle",
+        "sports",
+        "utilities"
+    ]
+}

@@ -1,126 +1,112 @@
-import { writable, derived } from "svelte/store";
-import type { Exercise, Step } from "../types";
-import { loadExercises, saveExercises } from "../utils/storage";
+import { writable, derived, get } from "svelte/store";
+import type { Exercise } from "../types";
+import {
+	loadExercises,
+	updateExerciseProgress,
+	updateStepCompletion,
+} from "../utils/storage";
 
 function createExercisesStore() {
-	const initial = loadExercises() ?? [];
-	const { subscribe, set, update } = writable<Exercise[]>(initial);
+	const { subscribe, set, update } = writable<Exercise[]>([]);
+
+	loadExercises().then((data) => {
+		if (data) set(data);
+	});
 
 	return {
 		subscribe,
+		update,
 
-		completeCurrentStep(exerciseId: string) {
-			let toSave: Exercise[] = [];
+		async completeCurrentStep(exerciseId: string) {
+			const exercise = get(exercises).find((e) => e.id === exerciseId);
+			if (!exercise || exercise.type !== "exercise") return;
 
-			update((exercises) => {
-				const next = exercises.map((ex) => {
-					if (ex.id !== exerciseId) return ex;
+			const stepIndex = Number(exercise.current_step_index);
+			const step = exercise?.steps?.find((st) => st.step_index === stepIndex);
+			if (!step || step.completed) return;
 
-					const stepIndex = ex.currentStepIndex;
-					const step = ex.steps[stepIndex];
-					if (!step || step.completed) return ex;
+			const nextIndex =
+				stepIndex + 1 < Number(exercise?.steps?.length)
+					? stepIndex + 1
+					: stepIndex;
 
-					const newSteps = ex.steps.map((s, i) =>
-						i === stepIndex
-							? { ...s, completed: true, completedAt: new Date().toISOString() }
-							: s,
-					);
+			await updateStepCompletion(step.id, true);
+			await updateExerciseProgress(exercise.id, nextIndex);
 
-					const nextIndex =
-						stepIndex + 1 < ex.steps.length ? stepIndex + 1 : stepIndex;
-
-					return { ...ex, steps: newSteps, currentStepIndex: nextIndex };
-				});
-
-				toSave = next;
-				return next;
-			});
-
-			saveExercises(toSave, true);
+			set((await loadExercises()) || []);
 		},
 
-		undoLastCompletion(exerciseId: string) {
-			let toSave: Exercise[] = [];
+		async undoLastCompletion(exerciseId: string) {
+			const exercise = get(exercises).find((e) => e.id === exerciseId);
+			if (!exercise || exercise.type !== "exercise") return;
 
-			update((exercises) => {
-				const next = exercises.map((ex) => {
-					if (ex.id !== exerciseId) return ex;
+			const stepIndex = Number(exercise.current_step_index);
+			const step = exercise.steps?.findLast((st) => st.completed);
+			if (!step) return;
 
-					let lastCompletedIndex = -1;
-					for (let i = ex.steps.length - 1; i >= 0; i--) {
-						if (ex.steps[i].completed) {
-							lastCompletedIndex = i;
-							break;
-						}
-					}
-					if (lastCompletedIndex === -1) return ex;
+			const prevIndex = stepIndex === 0 ? 0 : stepIndex - 1;
 
-					const newSteps = ex.steps.map((s, i) =>
-						i === lastCompletedIndex
-							? { ...s, completed: false, completedAt: undefined }
-							: s,
-					);
+			await updateStepCompletion(step.id, false);
+			await updateExerciseProgress(exercise.id, prevIndex);
 
-					return {
-						...ex,
-						steps: newSteps,
-						currentStepIndex: lastCompletedIndex,
-					};
-				});
-
-				toSave = next;
-				return next;
-			});
-
-			saveExercises(toSave, true);
+			set((await loadExercises()) || []);
 		},
 
 		set(newExercises?: Exercise[]) {
 			const exercises = newExercises || [];
 			set(exercises);
-
-			saveExercises(exercises);
+			// saveExercises(exercises);
 		},
 
 		clearProgress() {
 			update((exercises) => {
-				const newExercise = exercises.map((ex) => ({
-					...ex,
-					steps: ex.steps.map((s) => ({
-						...s,
-						completed: false,
-						completedAt: undefined,
-					})),
-					currentStepIndex: 0,
-				}));
+				const next = exercises.map((ex) => {
+					if (ex.type !== "exercise") return ex;
+					return {
+						...ex,
+						steps: ex.steps?.map((s) => ({
+							...s,
+							completed: false,
+							completed_at: undefined,
+						})),
+						current_step_index: 0, // Fixed: changed from camelCase
+					};
+				});
 
-				saveExercises(newExercise, true);
-				return newExercise;
+				return next;
 			});
 		},
 	};
 }
 
+// Fixed: Removed top-level await
 export const exercises = createExercisesStore();
 
 export const exerciseProgress = derived(exercises, (exs) => {
-	return exs.map((ex) => {
-		const completedCount = ex.steps.filter((s) => s.completed).length;
-		const total = ex.steps.length;
-		const pct = total === 0 ? 0 : Math.round((completedCount / total) * 100);
-		const current = ex.steps[ex.currentStepIndex] ?? null;
-		const next = ex.steps[ex.currentStepIndex + 1] ?? null;
-		const isComplete = completedCount === total;
+	return exs
+		.filter((e) => e.type === "exercise")
+		.map((ex) => {
+			const total = Number(ex.steps?.length ?? 0);
+			const completedCount = Number(
+				ex.steps?.filter((s) => s.completed).length ?? 0,
+			);
+			const pct = total === 0 ? 0 : Math.round((completedCount / total) * 100);
 
-		return {
-			id: ex.id,
-			name: ex.name,
-			completedCount,
-			total,
-			pct,
-			current,
-			next,
-			isComplete,
-		};
-	});
+			// Safe fallback if current_step_index is undefined or out of bounds
+			const currentIndex = ex.current_step_index ?? 0;
+			const current = ex.steps?.[currentIndex] ?? null;
+			const next = ex.steps?.[currentIndex + 1] ?? null;
+			const isComplete = total > 0 && completedCount === total;
+
+			return {
+				id: ex.id,
+				name: ex.name,
+				completedCount,
+				total,
+				pct,
+				current,
+				next,
+				isComplete,
+			};
+		});
 });

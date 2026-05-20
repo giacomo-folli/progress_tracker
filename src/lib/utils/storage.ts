@@ -1,87 +1,87 @@
-import { quickExercises } from "$lib/stores/quickExercises";
-import { get } from "svelte/store";
-import type { Exercise, QuickExercise, TrainingSession } from "../types";
-import { StorageKeys } from "./enums";
-import { toYamlString } from "./parsing";
+import type { Exercise } from "../types";
+import { supabase } from "$lib/supabase";
 
-export function loadExercises(): Exercise[] | null {
-	if (typeof localStorage === "undefined") return null;
+/**
+ * Loads all exercises along with their nested, ordered steps from Supabase.
+ * Returns null if an error occurs or if no user session is active.
+ */
+export async function loadExercises(): Promise<Exercise[] | null> {
 	try {
-		const raw = localStorage.getItem(StorageKeys.EXERCISES_PROGRESS);
-		if (!raw) return null;
-		return JSON.parse(raw) as Exercise[];
-	} catch {
-		return null;
-	}
-}
+		const { data, error } = await supabase
+			.from("exercises")
+			.select(
+				`id, name, icon, type, current_step_index, steps (id, description, completed, completed_at, step_index)`,
+			)
+			.order("step_index", { referencedTable: "steps" });
 
-export function saveExercises(
-	exercises: Exercise[],
-	persistToStorage: boolean = false,
-): void {
-	if (typeof localStorage === "undefined") return;
-	try {
-		localStorage.setItem(
-			StorageKeys.EXERCISES_PROGRESS,
-			JSON.stringify(exercises),
-		);
-
-		if (persistToStorage) {
-			const updatedConfig = toYamlString({
-				exercises,
-				quick: get(quickExercises),
-			});
-			localStorage.setItem(StorageKeys.CONFIG_FILE, updatedConfig);
+		if (error) {
+			console.error("Supabase error while loading exercises:", error.message);
+			return null;
 		}
-	} catch (error) {
-		console.error(error);
-	}
-}
 
-export function clearExercisesProgress(): void {
-	if (typeof localStorage === "undefined") return;
-	localStorage.removeItem(StorageKeys.EXERCISES_PROGRESS);
-}
-
-export function loadSessions(): TrainingSession[] | null {
-	if (typeof localStorage === "undefined") return null;
-	try {
-		const raw = localStorage.getItem(StorageKeys.SESSIONS_LOG);
-		if (!raw) return null;
-		return JSON.parse(raw) as TrainingSession[];
-	} catch {
+		if (!data) return null;
+		return data as Exercise[];
+	} catch (catchError) {
+		console.error("Unexpected runtime failure loading exercises:", catchError);
 		return null;
 	}
 }
 
-export function saveSessions(sessions: TrainingSession[]): void {
-	if (typeof localStorage === "undefined") return;
+/**
+ * Updates the active step index for a specific exercise.
+ * Useful when a user increments or decrements their current position.
+ */
+export async function updateExerciseProgress(
+	exerciseId: string,
+	next_step_index: number,
+): Promise<boolean> {
 	try {
-		localStorage.setItem(StorageKeys.SESSIONS_LOG, JSON.stringify(sessions));
-	} catch {
-		// ignore
+		const { error } = await supabase
+			.from("exercises")
+			.update({ current_step_index: next_step_index })
+			.eq("id", exerciseId);
+
+		if (error) {
+			console.error(
+				`Failed to update progress for exercise ${exerciseId}:`,
+				error.message,
+			);
+			return false;
+		}
+		return true;
+	} catch (err) {
+		console.error("Runtime error in updateExerciseProgress:", err);
+		return false;
 	}
 }
 
-export function loadQuickExercises(): QuickExercise[] | null {
-	if (typeof localStorage === "undefined") return null;
+/**
+ * Saves a single step's completion status and its timestamp.
+ * Call this immediately when a user checks/unchecks a specific step.
+ */
+export async function updateStepCompletion(
+	stepId: string,
+	completed: boolean,
+	completedAt?: string | null,
+): Promise<boolean> {
 	try {
-		const raw = localStorage.getItem(StorageKeys.QUICK_EXERCISES);
-		if (!raw) return null;
-		return JSON.parse(raw) as QuickExercise[];
-	} catch {
-		return null;
-	}
-}
+		const { error } = await supabase
+			.from("steps")
+			.update({
+				completed,
+				completed_at: completed
+					? completedAt || new Date().toISOString()
+					: null,
+			})
+			.eq("id", stepId);
 
-export function saveQuickExercises(quickExercises: QuickExercise[]): void {
-	if (typeof localStorage === "undefined") return;
-	try {
-		localStorage.setItem(
-			StorageKeys.QUICK_EXERCISES,
-			JSON.stringify(quickExercises),
-		);
-	} catch {
-		// ignore
+		if (error) {
+			console.error(`Failed to update step ${stepId}:`, error.message);
+			return false;
+		}
+		return true;
+	} catch (err) {
+		console.error("Runtime error in updateStepCompletion:", err);
+		return false;
 	}
 }
