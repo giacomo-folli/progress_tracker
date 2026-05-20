@@ -38,19 +38,19 @@
             "src": "/prossima/screenshots/screenshot-1.png",
             "sizes": "1170x2532",
             "type": "image/png",
-            "platform": "wide"
+            "platform": "narrow"
         },
         {
             "src": "/prossima/screenshots/screenshot-2.png",
             "sizes": "1170x2532",
             "type": "image/png",
-            "platform": "wide"
+            "platform": "narrow"
         },
         {
             "src": "/prossima/screenshots/screenshot-3.png",
             "sizes": "1170x2532",
             "type": "image/png",
-            "platform": "wide"
+            "platform": "narrow"
         }
     ],
     "id": "com.giacomofolli.prossima",
