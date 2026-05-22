@@ -8,8 +8,6 @@
 			(s) => DateTime.fromISO(s.completed_at).diff(DateTime.now()).days === 0,
 		),
 	);
-
-	$effect(() => console.log(todayEexercise));
 </script>
 
 <section class="cta-card">
