@@ -2,6 +2,13 @@
 	import { resolve } from "$app/paths";
 	import { exercises } from "$lib/stores/exercises";
 	import { sessions } from "$lib/stores/sessions";
+	import {
+		avgSessionsPerWeek,
+		currentStreak,
+		daysSinceLastSession,
+		longestStreak,
+		weeksActive,
+	} from "$lib/utils/sessions-stats";
 
 	const filteredExercises = $derived(
 		$exercises.filter((e) => e.type === "exercise"),
@@ -84,68 +91,10 @@
 	// 	weeklyBuckets().filter((w) => w.count > 0).length,
 	// );
 
-	function weeksActive(): number {
-		if ($sessions.length === 0) return 1;
-		const oldest = new Date($sessions[$sessions.length - 1].completed_at);
-		const diffMs = Date.now() - oldest.getTime();
-		return Math.max(1, Math.ceil(diffMs / (7 * 86400000)));
-	}
-
-	const avgPerWeek = $derived(
-		totalSessions === 0
-			? 0
-			: (totalSessions / Math.max(weeksActive(), 1)).toFixed(1),
-	);
-
-	// const longestStreak = $derived(() => {
-	// 	if ($sessions.length === 0) return 0;
-	// 	const days = [
-	// 		...new Set(
-	// 			$sessions.map((s) =>
-	// 				new Date(s.completed_at).toISOString().slice(0, 10),
-	// 			),
-	// 		),
-	// 	].sort();
-	// 	let max = 1,
-	// 		cur = 1;
-	// 	for (let i = 1; i < days.length; i++) {
-	// 		const diff =
-	// 			(new Date(days[i]).getTime() - new Date(days[i - 1]).getTime()) /
-	// 			86400000;
-	// 		if (diff === 1) {
-	// 			cur++;
-	// 			max = Math.max(max, cur);
-	// 		} else cur = 1;
-	// 	}
-	// 	return max;
-	// });
-
-	// const currentStreak = $derived(() => {
-	// 	if ($sessions.length === 0) return 0;
-	// 	const days = [
-	// 		...new Set(
-	// 			$sessions.map((s) =>
-	// 				new Date(s.completed_at).toISOString().slice(0, 10),
-	// 			),
-	// 		),
-	// 	]
-	// 		.sort()
-	// 		.reverse();
-	// 	const today = new Date().toISOString().slice(0, 10);
-	// 	const yesterday = new Date(Date.now() - 86400000)
-	// 		.toISOString()
-	// 		.slice(0, 10);
-	// 	if (days[0] !== today && days[0] !== yesterday) return 0;
-	// 	let streak = 1;
-	// 	for (let i = 1; i < days.length; i++) {
-	// 		const diff =
-	// 			(new Date(days[i - 1]).getTime() - new Date(days[i]).getTime()) /
-	// 			86400000;
-	// 		if (diff === 1) streak++;
-	// 		else break;
-	// 	}
-	// 	return streak;
-	// });
+	const weeksActiveCount = $derived(weeksActive($sessions));
+	const avgPerWeek = $derived(avgSessionsPerWeek($sessions));
+	const streakCurrent = $derived(currentStreak($sessions));
+	const streakLongest = $derived(longestStreak($sessions));
 
 	const lastSessionDate = $derived(
 		$sessions.length > 0
@@ -157,14 +106,7 @@
 			: null,
 	);
 
-	const daysSinceLast = $derived(
-		$sessions.length > 0
-			? Math.floor(
-					(Date.now() - new Date($sessions[0].completed_at).getTime()) /
-						86400000,
-				)
-			: null,
-	);
+	const daysSinceLast = $derived(daysSinceLastSession($sessions));
 
 	const maxFreq = $derived(
 		Math.max(1, ...byFrequency.map((e) => e.timesPerformed)),
@@ -174,10 +116,10 @@
 	);
 </script>
 
-<div class="page-layout">
+<div class="page page-layout">
 	<header class="page-header">
-		<h1>Analisi</h1>
-		<p class="sub">
+		<h1 class="large-title">Analisi</h1>
+		<p class="page-subtitle sub">
 			{totalSessions} sessioni · {completedSteps}/{totalSteps} step completati
 		</p>
 	</header>
@@ -188,7 +130,7 @@
 		</p>
 	{:else}
 		<div class="stat-row">
-			<div class="stat-card">
+			<div class="stat-card ios-card">
 				<span class="stat-value">{overallPct}%</span>
 				<span class="stat-label">Totale</span>
 				<div class="mini-bar-track">
@@ -197,7 +139,7 @@
 				<span class="stat-sub">{completedSteps} di {totalSteps} step</span>
 			</div>
 
-			<div class="stat-card">
+			<div class="stat-card ios-card">
 				<span class="stat-value"
 					>{fullyDoneExercises}/{String(filteredExercises.length)}</span
 				>
@@ -215,7 +157,7 @@
 				>
 			</div>
 
-			<div class="stat-card">
+			<div class="stat-card ios-card">
 				<span class="stat-value">{totalSessions}</span>
 				<span class="stat-label">Sessioni totali</span>
 				<span class="stat-sub">
@@ -227,38 +169,33 @@
 				</span>
 			</div>
 
-			<div class="stat-card">
+			<div class="stat-card ios-card">
 				<span class="stat-value">{avgPerWeek}</span>
 				<span class="stat-label">Sessioni / settimana</span>
 				<span class="stat-sub"
-					>media su {weeksActive()} settiman{weeksActive() === 1
+					>media su {weeksActiveCount} settiman{weeksActiveCount === 1
 						? "a"
 						: "e"}</span
 				>
 			</div>
 		</div>
 
-		<!-- <div class="card">
+		<div class="card ios-card">
 			<p class="card-title">Streak</p>
 			<div class="streak-row">
 				<div class="streak-item">
-					<span class="streak-val">{currentStreak()}</span>
+					<span class="streak-val">{streakCurrent}</span>
 					<span class="streak-lbl">giorni attuale</span>
 				</div>
 				<div class="streak-divider"></div>
 				<div class="streak-item">
-					<span class="streak-val">{longestStreak()}</span>
+					<span class="streak-val">{streakLongest}</span>
 					<span class="streak-lbl">giorni record</span>
 				</div>
-				<div class="streak-divider"></div>
-				<div class="streak-item">
-					<span class="streak-val">{weeksWithSession}</span>
-					<span class="streak-lbl">settimane attive</span>
-				</div>
 			</div>
-		</div> -->
+		</div>
 
-		<div class="card">
+		<div class="card ios-card">
 			<p class="card-title">
 				Sessioni per settimana <span class="card-title-sub">(ultime 8)</span>
 			</p>
@@ -279,7 +216,7 @@
 			</div>
 		</div>
 
-		<div class="card">
+		<div class="card ios-card">
 			<p class="card-title">Frequenza per esercizio</p>
 			<ul class="freq-list">
 				{#each byFrequency as ex}
@@ -302,13 +239,15 @@
 			</ul>
 		</div>
 
-		<div class="card">
+		<div class="card ios-card">
 			<p class="card-title">Progressione per esercizio</p>
 			<ul class="prog-list">
 				{#each exerciseStats as ex}
 					<li class="prog-item">
 						<div class="prog-top">
-							<a href={resolve(`/exercises/${ex.id}`)} class="prog-name"
+							<a
+								href={resolve("/exercises/[id]", { id: ex.id })}
+								class="prog-name"
 								>{ex.name}</a
 							>
 							<span class="prog-pct">{ex.pct}%</span>
@@ -329,24 +268,15 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
-		max-width: 600px;
-		width: 100%;
-		margin: 0 auto;
 		padding-bottom: 2rem;
 	}
 
-	.page-header h1 {
-		margin: 0;
-		font-size: 1.75rem;
-		font-weight: 700;
-		letter-spacing: -0.03em;
-		color: var(--color-text);
+	.page-header {
+		margin-bottom: 0.25rem;
 	}
 
 	.sub {
-		margin: 0.35rem 0 0;
-		font-size: 0.85rem;
-		color: var(--color-muted);
+		margin: 0;
 	}
 
 	/* ── stat row: 2x2 grid ── */
@@ -357,9 +287,6 @@
 	}
 
 	.stat-card {
-		background: var(--color-card, #1c1c1e);
-		border: 1px solid var(--color-border, #2c2c2e);
-		border-radius: 12px;
 		padding: 1.25rem;
 		display: flex;
 		flex-direction: column;
@@ -405,11 +332,7 @@
 		line-height: 1.3;
 	}
 
-	/* ── generic cards ── */
 	.card {
-		background: var(--color-card, #1c1c1e);
-		border: 1px solid var(--color-border, #2c2c2e);
-		border-radius: 12px;
 		padding: 1.25rem;
 	}
 

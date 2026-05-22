@@ -100,8 +100,6 @@
 </div>
 
 <style>
-	@import "https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css";
-
 	.page {
 		min-height: 100vh;
 		display: flex;

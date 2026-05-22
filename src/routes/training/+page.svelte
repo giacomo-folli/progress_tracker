@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from "$app/paths";
 	import { exercises } from "$lib/stores/exercises";
 	import { sessions } from "$lib/stores/sessions";
 	import CelebrationOverlay from "$lib/components/CelebrationOverlay.svelte";
@@ -40,7 +41,7 @@
 	let selectedExercises = $state<Map<string, SessionExercise>>(new Map());
 	let celebrating = $state(false);
 
-	function logSession() {
+	async function logSession() {
 		if (program.length === 0) return;
 		const snapshot: Exercise[] = program
 			.filter((ex) => ex.checked)
@@ -57,7 +58,7 @@
 			});
 		});
 
-		sessions.logSession(snapshot);
+		await sessions.logSession(snapshot);
 		celebrating = true;
 	}
 
@@ -86,6 +87,13 @@
 	visible={celebrating}
 	onDone={() => (celebrating = false)}
 />
+
+<div class="training-page">
+<a href={resolve("/home")} class="nav-back">
+	<i class="ti ti-chevron-left" aria-hidden="true"></i>
+	Home
+</a>
+<h1 class="page-title">Registra sessione</h1>
 
 <div class="training-layout">
 	<section class="col-program">
@@ -134,6 +142,7 @@
 	<!-- Spacer so content doesn't hide behind the fixed bar -->
 	<div class="action-spacer" aria-hidden="true"></div>
 </div>
+</div>
 
 <!-- Fixed bottom action bar -->
 <div class="action-bar">
@@ -147,6 +156,19 @@
 </div>
 
 <style>
+	.training-page {
+		max-width: 600px;
+		margin: 0 auto;
+		width: 100%;
+	}
+
+	.page-title {
+		margin: 0 0 1.25rem;
+		font-size: 1.75rem;
+		font-weight: 700;
+		letter-spacing: -0.03em;
+	}
+
 	.training-layout {
 		display: flex;
 		flex-direction: column;

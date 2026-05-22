@@ -1,42 +1,48 @@
-import { writable } from "svelte/store";
+import { writable, get } from "svelte/store";
 import type { Exercise, TrainingSession } from "../types";
-// import { loadSessions, saveSessions } from "../utils/storage";
+import {
+	clearTrainingSessions,
+	deleteTrainingSession,
+	insertTrainingSession,
+	loadTrainingSessions,
+} from "../utils/storage";
 
 function createSessionsStore() {
-	// const initial = loadSessions() ?? [];
 	const { subscribe, update, set } = writable<TrainingSession[]>([]);
+	let initialized = false;
 
 	return {
 		subscribe,
 
+		async init() {
+			if (initialized) return;
+			const data = await loadTrainingSessions();
+			if (data) set(data);
+			initialized = true;
+		},
+
 		async logSession(exercises: Exercise[]) {
-			let next: TrainingSession[] = [];
+			const row = await insertTrainingSession(exercises);
+			if (row) {
+				update((sessions) => [row, ...sessions]);
+				return;
+			}
 
 			const session: TrainingSession = {
 				completed_at: new Date().toISOString(),
 				exercises,
 			};
-			update((sessions) => {
-				next = [session, ...sessions];
-				return next;
-			});
-
-			// saveSessions(next);
+			update((sessions) => [session, ...sessions]);
 		},
 
-		deleteSession(id: string) {
-			let next: TrainingSession[] = [];
-			update((sessions) => {
-				next = sessions.filter((s) => s.id !== id);
-				return next;
-			});
-
-			// saveSessions(next);
+		async deleteSession(id: string) {
+			if (id) await deleteTrainingSession(id);
+			update((sessions) => sessions.filter((s) => s.id !== id));
 		},
 
-		clearSessions() {
+		async clearSessions() {
+			await clearTrainingSessions();
 			set([]);
-			// saveSessions([]);
 		},
 	};
 }

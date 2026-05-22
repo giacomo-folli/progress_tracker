@@ -29,7 +29,10 @@
 	}
 </script>
 
-<div class="settings-container">
+<main class="page settings-container">
+	<header class="settings-header">
+		<h1 class="large-title">Impostazioni</h1>
+	</header>
 
 	<!-- Profilo -->
 	<section class="card">
@@ -47,7 +50,7 @@
 	<!-- Danger zone -->
 	<section class="card danger-card">
 		<div class="section-header">
-			<span class="section-title danger-title">Danger zone</span>
+			<span class="section-title danger-title">Zona pericolosa</span>
 		</div>
 		<p class="section-desc">Queste azioni sono irreversibili.</p>
 		<div class="danger-buttons">
@@ -73,9 +76,12 @@
 		</div>
 	</section>
 
-</div>
+</main>
 
 <style>
+	.settings-header {
+		margin-bottom: 1.25rem;
+	}
 	:root {
 		--color-danger-card-bg: rgba(220, 38, 38, 0.07);
 		--color-danger-card-border: rgba(220, 38, 38, 0.15);

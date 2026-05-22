@@ -1,4 +1,4 @@
-import type { Exercise } from "../types";
+import type { Exercise, TrainingSession } from "../types";
 import { supabase } from "$lib/supabase";
 
 /**
@@ -82,6 +82,83 @@ export async function updateStepCompletion(
 		return true;
 	} catch (err) {
 		console.error("Runtime error in updateStepCompletion:", err);
+		return false;
+	}
+}
+
+export async function loadTrainingSessions(): Promise<TrainingSession[] | null> {
+	try {
+		const { data, error } = await supabase
+			.from("training_sessions")
+			.select("id, completed_at, exercises")
+			.order("completed_at", { ascending: false });
+
+		if (error) {
+			console.error("Supabase error loading training sessions:", error.message);
+			return null;
+		}
+
+		return (data ?? []) as TrainingSession[];
+	} catch (err) {
+		console.error("Unexpected failure loading training sessions:", err);
+		return null;
+	}
+}
+
+export async function insertTrainingSession(
+	exercises: Exercise[],
+): Promise<TrainingSession | null> {
+	try {
+		const { data, error } = await supabase
+			.from("training_sessions")
+			.insert({ exercises })
+			.select("id, completed_at, exercises")
+			.single();
+
+		if (error) {
+			console.error("Failed to insert training session:", error.message);
+			return null;
+		}
+
+		return data as TrainingSession;
+	} catch (err) {
+		console.error("Unexpected failure inserting training session:", err);
+		return null;
+	}
+}
+
+export async function deleteTrainingSession(id: string): Promise<boolean> {
+	try {
+		const { error } = await supabase
+			.from("training_sessions")
+			.delete()
+			.eq("id", id);
+
+		if (error) {
+			console.error(`Failed to delete session ${id}:`, error.message);
+			return false;
+		}
+		return true;
+	} catch (err) {
+		console.error("Unexpected failure deleting training session:", err);
+		return false;
+	}
+}
+
+export async function clearTrainingSessions(): Promise<boolean> {
+	try {
+		const { error } = await supabase
+			.from("training_sessions")
+			.delete()
+			.gte("completed_at", "1970-01-01T00:00:00Z");
+
+		if (error) {
+			console.error("Failed to clear training sessions:", error.message);
+			return false;
+		}
+		return true;
+	} catch (err) {
+		console.error("Unexpected failure clearing training sessions:", err);
 		return false;
 	}
 }

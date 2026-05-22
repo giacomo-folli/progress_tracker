@@ -3,7 +3,12 @@
 	import { exerciseProgress } from "$lib/stores/exercises";
 </script>
 
-<main>
+<main class="page">
+	<header class="exercises-header">
+		<h1 class="large-title">Esercizi</h1>
+		<p class="page-subtitle">Il tuo programma di allenamento</p>
+	</header>
+
 	<div class="exercises-grid">
 		{#each $exerciseProgress as ex (ex.id)}
 			<ExerciseCard
@@ -21,9 +26,20 @@
 </main>
 
 <style>
+	.exercises-header {
+		margin-bottom: 1.25rem;
+	}
+
 	.exercises-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-		gap: 1rem;
+		grid-template-columns: 1fr;
+		gap: 0.75rem;
+	}
+
+	@media (min-width: 600px) {
+		.exercises-grid {
+			grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+			gap: 1rem;
+		}
 	}
 </style>

@@ -24,7 +24,11 @@
 	} = $props();
 </script>
 
-<a href={resolve(`/exercises/${id}`)} class="card" class:done={isComplete}>
+<a
+	href={resolve("/exercises/[id]", { id })}
+	class="card ios-card"
+	class:done={isComplete}
+>
 	<div class="card-header">
 		<span class="name">{name}</span>
 		<span class="pct">{pct}%</span>
@@ -34,15 +38,15 @@
 
 	<div class="card-body">
 		{#if isComplete}
-			<p class="step-label complete-label">✓ Completed</p>
+			<p class="step-label complete-label">✓ Completato</p>
 		{:else}
 			<p class="step-label">
-				<span class="step-meta">Now</span>
+				<span class="step-meta">Ora</span>
 				<span class="step-value"> {current?.description ?? "—"}</span>
 			</p>
 			{#if next}
 				<p class="step-label next">
-					<span class="step-meta">Next</span>
+					<span class="step-meta">Prossimo</span>
 					<span class="step-value"> {next.description} </span>
 				</p>
 			{/if}
@@ -59,19 +63,13 @@
 		display: block;
 		text-decoration: none;
 		color: inherit;
-		background: var(--color-card);
-		border: 1px solid var(--color-border);
-		border-radius: 10px;
-		padding: 1.25rem 1.5rem;
-		transition:
-			border-color 0.15s ease,
-			box-shadow 0.15s ease;
+		padding: 1.25rem 1.125rem;
+		transition: transform 0.15s ease, box-shadow 0.15s ease;
 		cursor: pointer;
 	}
 
-	.card:hover {
-		border-color: var(--color-accent);
-		box-shadow: 0 0 0 3px var(--color-accent-dim);
+	.card:active {
+		transform: scale(0.98);
 	}
 
 	.card.done {

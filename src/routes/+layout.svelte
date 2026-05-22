@@ -7,9 +7,15 @@
 	import { page } from "$app/state";
 	import { goto } from "$app/navigation";
 	import { resolve } from "$app/paths";
+	import { sessions } from "$lib/stores/sessions";
 
 	let pwaWebManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : "");
 	let isSignedIn = $state(false);
+
+	const hideTabBar = $derived(
+		page.url.pathname.includes("/training") ||
+			/\/exercises\/[^/]+\/?$/.test(page.url.pathname),
+	);
 
 	onMount(() => {
 		if (pwaInfo) {
@@ -18,9 +24,15 @@
 			});
 		}
 
-		const privRoutes = ["/analytics", "/training", "/settings", "/exercises"];
+		const privRoutes = [
+			"/analytics",
+			"/training",
+			"/settings",
+			"/exercises",
+			"/home",
+		];
 
-		const handleAuthRedirect = (session: unknown) => {
+		const handleAuthRedirect = async (session: unknown) => {
 			const currentRoute = page.url.pathname;
 			isSignedIn = !!session;
 			const protectedRouteActive = privRoutes.some((r) =>
@@ -28,8 +40,12 @@
 			);
 
 			if (!isSignedIn && protectedRouteActive) goto(resolve("/auth"));
-			else if (isSignedIn && currentRoute.includes("/auth"))
-				goto(resolve("/training"));
+			else if (isSignedIn && currentRoute.includes("/auth")) {
+				await sessions.init();
+				goto(resolve("/home"));
+			} else if (isSignedIn) {
+				await sessions.init();
+			}
 		};
 
 		supabase.auth.getSession().then(({ data: { session } }) => {
@@ -51,7 +67,6 @@
 </script>
 
 <svelte:head>
-	<!-- Inietta il tag del manifest generato da Vite -->
 	{@html pwaWebManifest}
 
 	<script
@@ -61,11 +76,11 @@
 	></script>
 </svelte:head>
 
-<div class="shell" class:isSignedIn>
-	{#if isSignedIn}
+<div class="shell" class:isSignedIn class:fullBleedBottom={hideTabBar}>
+	{@render children()}
+	{#if isSignedIn && !hideTabBar}
 		<Nav />
 	{/if}
-	{@render children()}
 </div>
 
 <style>
@@ -75,15 +90,21 @@
 	}
 
 	.shell.isSignedIn {
-		padding: 1.25rem 1rem 4rem;
+		padding: calc(0.75rem + env(safe-area-inset-top, 0px)) var(--page-padding)
+			calc(var(--tab-bar-height) + env(safe-area-inset-bottom, 0px));
 		overflow-y: auto;
 		height: 100%;
 		-webkit-overflow-scrolling: touch;
 	}
 
+	.shell.isSignedIn.fullBleedBottom {
+		padding-bottom: env(safe-area-inset-bottom, 0px);
+	}
+
 	@media (min-width: 600px) {
-		.shell {
-			padding: 2rem 1.5rem 4rem;
+		.shell.isSignedIn {
+			padding-left: 1.5rem;
+			padding-right: 1.5rem;
 		}
 	}
 </style>
