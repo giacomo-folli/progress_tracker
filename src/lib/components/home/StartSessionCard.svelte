@@ -4,9 +4,15 @@
 	import { DateTime } from "luxon";
 
 	const todayEexercise = $derived(
-		$sessions.find(
-			(s) => DateTime.fromISO(s.completed_at).diff(DateTime.now()).days === 0,
-		),
+		$sessions.find((s) => {
+			const then = DateTime.fromISO(s.completed_at).toObject();
+			const now = DateTime.now().toObject();
+			return (
+				then.day === now.day &&
+				then.month === now.month &&
+				then.year === now.year
+			);
+		}),
 	);
 </script>
 
@@ -17,7 +23,7 @@
 		<p class="cta-sub">Esercizio di oggi completato. Adesso riposo!</p>
 	{:else}
 		<p class="cta-sub">Inizia il primo esercizio di oggi.</p>
-		<a href={resolve("/exercises")} class="btn btn--secondary cta-btn">
+		<a href={resolve("/training")} class="btn btn--secondary cta-btn">
 			<i class="ti ti-dumbbell"></i>
 			Vai agli esercizi
 		</a>
@@ -33,12 +39,12 @@
 		padding: 1.5rem; /* Increased padding for a more premium feel */
 		border-radius: 24px; /* Smoother, more modern corners */
 
-		/* 1. Dynamic, multi-stop gradient for a smoother transition */
 		background: linear-gradient(
 			135deg,
-			hsl(170, 80%, 25%) 0%,
-			/* Deep teal */ hsl(160, 70%, 40%) 50%,
-			/* Rich emerald */ hsl(150, 60%, 70%) 100% /* Soft mint highlight */
+			hsl(153, 40%, 22%) 0%,
+			/* deep: darker than --color-accent */ hsl(153, 43%, 35%) 50%,
+			/* mid:  matches --color-accent exactly */ hsl(154, 45%, 58%) 100%
+				/* highlight: between accent and accent-dim */
 		);
 
 		/* 2. Layered shadow for depth and a glowing effect */

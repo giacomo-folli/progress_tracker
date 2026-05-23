@@ -11,10 +11,7 @@
 	async function handleLogIn() {
 		loading = true;
 		errorMessage = "";
-		const { error } = await supabase.auth.signInWithPassword({
-			email,
-			password,
-		});
+		const { error } = await supabase.auth.signInWithPassword({ email, password });
 		if (error) errorMessage = error.message;
 		loading = false;
 	}
@@ -28,16 +25,18 @@
 	}
 </script>
 
-<div class="page">
+<div class="auth-page">
 	<div class="wrapper">
+
 		<div class="brand">
 			<div class="brand-icon">
 				<i class="ti ti-barbell" aria-hidden="true"></i>
 			</div>
-			<p class="brand-name">Prossima</p>
+			<h1 class="brand-name">Prossima</h1>
+			<p class="brand-sub">Il tuo allenamento, ogni giorno</p>
 		</div>
 
-		<div class="card">
+		<div class="form-stack">
 			<div class="field">
 				<label for="email">Email</label>
 				<input
@@ -65,10 +64,7 @@
 						onclick={() => (showPassword = !showPassword)}
 						aria-label="Mostra/nascondi password"
 					>
-						<i
-							class={showPassword ? "ti ti-eye-off" : "ti ti-eye"}
-							aria-hidden="true"
-						></i>
+						<i class={showPassword ? "ti ti-eye-off" : "ti ti-eye"} aria-hidden="true"></i>
 					</button>
 				</div>
 			</div>
@@ -77,117 +73,127 @@
 				<p class="error">{errorMessage}</p>
 			{/if}
 
-			<div class="actions">
-				<button
-					class="btn btn--primary"
-					onclick={handleLogIn}
-					disabled={loading || !email || !password}
-				>
-					{loading ? "Accesso…" : "Accedi"}
-				</button>
-				<button
-					class="btn btn--ghost"
-					onclick={handleSignUp}
-					disabled={loading || !email || !password}
-				>
-					Registrati
-				</button>
-			</div>
+			<button
+				class="btn btn--primary btn-login"
+				onclick={handleLogIn}
+				disabled={loading || !email || !password}
+			>
+				{loading ? "Accesso…" : "Accedi"}
+			</button>
+
+			<div class="divider"><span>oppure</span></div>
+
+			<button
+				class="btn btn--secondary btn-signup"
+				onclick={handleSignUp}
+				disabled={loading || !email || !password}
+			>
+				Crea account
+			</button>
 		</div>
 
-		<p class="footer-hint">Accedi o crea un account per iniziare.</p>
+		<p class="footer-hint">Accedendo accetti i Termini di servizio.</p>
+
 	</div>
 </div>
 
 <style>
-	.page {
+	.auth-page {
 		min-height: 100vh;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 1.5rem;
+		padding: 2rem var(--page-padding);
 	}
 
 	.wrapper {
 		width: 100%;
-		max-width: 360px;
+		max-width: 340px;
 		display: flex;
 		flex-direction: column;
-		gap: 1.75rem;
+		gap: 2rem;
 	}
 
-	/* Brand */
+	/* ── Brand ── */
 	.brand {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 0.5rem;
+		gap: 0.3rem;
 	}
 
 	.brand-icon {
-		width: 48px;
-		height: 48px;
-		border-radius: 12px;
-		border: 1px solid var(--color-border, #e5e7eb);
-		background: var(--color-surface-secondary, #f9fafb);
+		width: 56px;
+		height: 56px;
+		border-radius: 16px;
+		background: var(--color-accent-dim);
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		margin-bottom: 0.6rem;
 	}
 
 	.brand-icon i {
-		font-size: 22px;
-		color: var(--color-text, #111);
+		font-size: 26px;
+		color: var(--color-accent);
 	}
 
 	.brand-name {
 		margin: 0;
-		font-size: 15px;
-		font-weight: 500;
-		letter-spacing: -0.01em;
-		color: var(--color-text, #111);
+		font-size: 1.9rem;
+		font-weight: 700;
+		letter-spacing: -0.03em;
+		color: var(--color-text);
+		line-height: 1.1;
 	}
 
-	/* Card */
-	.card {
-		background: var(--color-surface, #fff);
-		border: 1px solid var(--color-border, #e5e7eb);
-		border-radius: 14px;
-		padding: 1.5rem;
+	.brand-sub {
+		margin: 0;
+		font-size: 0.85rem;
+		color: var(--color-muted);
+	}
+
+	/* ── Form stack — no card, fields float on the bg ── */
+	.form-stack {
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: 0.75rem;
 	}
 
-	/* Fields */
 	.field {
 		display: flex;
 		flex-direction: column;
-		gap: 0.35rem;
+		gap: 0.4rem;
 	}
 
 	label {
-		font-size: 12px;
-		color: var(--color-muted, #6b7280);
-		letter-spacing: 0.02em;
+		font-size: 0.72rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--color-muted);
 	}
 
 	input {
-		font-family: inherit;
-		font-size: 14px;
-		color: var(--color-text, #111);
-		background: var(--color-surface-secondary, #f9fafb);
-		border: 1px solid var(--color-border, #e5e7eb);
-		border-radius: 8px;
-		padding: 0.6rem 0.75rem;
+		font-family: var(--font-sans);
+		font-size: 0.95rem;
+		font-weight: 500;
+		color: var(--color-text);
+		background: var(--color-card);
+		border: 1.5px solid var(--color-border);
+		border-radius: 12px;
+		padding: 0.8rem 0.9rem;
 		width: 100%;
 		outline: none;
-		transition: border-color 0.15s;
 		box-sizing: border-box;
+		box-shadow: var(--shadow-card);
+		transition: border-color 0.15s, box-shadow 0.15s;
+		-webkit-appearance: none;
 	}
 
 	input:focus {
 		border-color: var(--color-accent);
+		box-shadow: 0 0 0 3px var(--color-accent-dim);
 	}
 
 	input:disabled {
@@ -196,98 +202,81 @@
 	}
 
 	input::placeholder {
-		color: var(--color-muted, #9ca3af);
+		color: var(--color-muted);
+		font-weight: 400;
 	}
 
-	/* Password toggle */
+	/* ── Password toggle ── */
 	.password-wrap {
 		position: relative;
 	}
 
 	.password-wrap input {
-		padding-right: 2.5rem;
+		padding-right: 2.75rem;
 	}
 
 	.eye-btn {
 		position: absolute;
-		right: 0.6rem;
+		right: 0.7rem;
 		top: 50%;
 		transform: translateY(-50%);
 		background: none;
 		border: none;
-		padding: 0;
+		padding: 0.2rem;
 		cursor: pointer;
-		color: var(--color-muted, #9ca3af);
+		color: var(--color-muted);
 		display: flex;
 		align-items: center;
-		line-height: 1;
+		border-radius: 6px;
 	}
 
-	.eye-btn i {
-		font-size: 16px;
-	}
+	.eye-btn i { font-size: 17px; }
 
-	/* Error */
+	/* ── Error ── */
 	.error {
 		margin: 0;
-		font-size: 12px;
-		color: var(--color-danger, #dc2626);
+		font-size: 0.8rem;
+		color: var(--color-danger);
 		text-align: center;
 	}
 
-	/* Actions */
-	.actions {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
+	/* ── Buttons ── */
+	.btn-login,
+	.btn-signup {
+		width: 100%;
+		font-size: 0.95rem;
+		padding: 0.8rem 1rem;
+		border-radius: 12px;
 		margin-top: 0.25rem;
 	}
 
-	.btn {
-		width: 100%;
-		padding: 0.65rem;
-		border-radius: 8px;
-		font-size: 14px;
-		font-family: inherit;
-		cursor: pointer;
-		transition:
-			opacity 0.15s,
-			background 0.15s;
-		letter-spacing: -0.01em;
+	/* ── Divider ── */
+	.divider {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin: 0.1rem 0;
 	}
 
-	.btn:disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
+	.divider::before,
+	.divider::after {
+		content: "";
+		flex: 1;
+		height: 1px;
+		background: var(--color-border);
 	}
 
-	.btn--primary {
-		background: var(--color-accent);
-		color: var(--color-surface, #fff);
-		border: none;
-		font-weight: 500;
+	.divider span {
+		font-size: 0.75rem;
+		color: var(--color-muted);
+		white-space: nowrap;
 	}
 
-	.btn--primary:hover:not(:disabled) {
-		opacity: 0.85;
-	}
-
-	.btn--ghost {
-		background: transparent;
-		color: var(--color-text, #111);
-		border: 1px solid var(--color-border, #e5e7eb);
-		font-weight: 400;
-	}
-
-	.btn--ghost:hover:not(:disabled) {
-		background: var(--color-surface-secondary, #f9fafb);
-	}
-
-	/* Footer */
+	/* ── Footer ── */
 	.footer-hint {
 		margin: 0;
 		text-align: center;
-		font-size: 12px;
-		color: var(--color-muted, #9ca3af);
+		font-size: 0.75rem;
+		color: var(--color-muted);
 	}
 </style>
