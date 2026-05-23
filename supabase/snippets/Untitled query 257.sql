@@ -1,0 +1,1 @@
+SELECT FROM auth.users WHERE email = 'giacomofolli01@gmail.com';

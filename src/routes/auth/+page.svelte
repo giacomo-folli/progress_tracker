@@ -3,15 +3,20 @@
 	import { supabase } from "$lib/supabase";
 
 	let email = $state("");
+	let name = $state("");
 	let password = $state("");
 	let errorMessage = $state("");
 	let loading = $state(false);
 	let showPassword = $state(false);
+	let isSignUp = $state(false);
 
 	async function handleLogIn() {
 		loading = true;
 		errorMessage = "";
-		const { error } = await supabase.auth.signInWithPassword({ email, password });
+		const { error } = await supabase.auth.signInWithPassword({
+			email,
+			password,
+		});
 		if (error) errorMessage = error.message;
 		loading = false;
 	}
@@ -19,7 +24,16 @@
 	async function handleSignUp() {
 		loading = true;
 		errorMessage = "";
-		const { error } = await supabase.auth.signUp({ email, password });
+		const { error } = await supabase.auth.signUp({
+			email,
+			password,
+			options: {
+				data: {
+					full_name: "AIOOO ZIVERI",
+					display_name: "AIOOO",
+				},
+			},
+		});
 		if (error) errorMessage = error.message;
 		loading = false;
 	}
@@ -27,7 +41,6 @@
 
 <div class="auth-page">
 	<div class="wrapper">
-
 		<div class="brand">
 			<div class="brand-icon">
 				<i class="ti ti-barbell" aria-hidden="true"></i>
@@ -64,40 +77,77 @@
 						onclick={() => (showPassword = !showPassword)}
 						aria-label="Mostra/nascondi password"
 					>
-						<i class={showPassword ? "ti ti-eye-off" : "ti ti-eye"} aria-hidden="true"></i>
+						<i
+							class={showPassword ? "ti ti-eye-off" : "ti ti-eye"}
+							aria-hidden="true"
+						></i>
 					</button>
 				</div>
 			</div>
+
+			{#if isSignUp}
+				<div class="field">
+					<label for="name">Nome</label>
+					<input
+						id="name"
+						type="string"
+						placeholder="Lilli"
+						bind:value={name}
+						disabled={loading}
+					/>
+				</div>
+			{/if}
 
 			{#if errorMessage}
 				<p class="error">{errorMessage}</p>
 			{/if}
 
-			<button
-				class="btn btn--primary btn-login"
-				onclick={handleLogIn}
-				disabled={loading || !email || !password}
-			>
-				{loading ? "Accesso…" : "Accedi"}
-			</button>
+			{#if isSignUp}
+				<button
+					class="btn btn--primary btn-login"
+					onclick={handleSignUp}
+					disabled={loading || !email || !password}
+				>
+					Crea account
+				</button>
+			{:else}
+				<button
+					class="btn btn--primary btn-login"
+					onclick={handleLogIn}
+					disabled={loading || !email || !password}
+				>
+					{loading ? "Accesso…" : "Accedi"}
+				</button>
+			{/if}
 
-			<div class="divider"><span>oppure</span></div>
-
-			<button
-				class="btn btn--secondary btn-signup"
-				onclick={handleSignUp}
-				disabled={loading || !email || !password}
-			>
-				Crea account
-			</button>
+			<div class="divider">
+				<span>oppure</span>
+				{#if isSignUp}
+					<span
+						class="link-span"
+						role="presentation"
+						onclick={() => (isSignUp = false)}>accedi</span
+					>
+				{:else}
+					<span
+						class="link-span"
+						role="presentation"
+						onclick={() => (isSignUp = true)}>crea account</span
+					>
+				{/if}
+			</div>
 		</div>
 
 		<p class="footer-hint">Accedendo accetti i Termini di servizio.</p>
-
 	</div>
 </div>
 
 <style>
+	.link-span {
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
 	.auth-page {
 		min-height: 100vh;
 		display: flex;
@@ -187,7 +237,9 @@
 		outline: none;
 		box-sizing: border-box;
 		box-shadow: var(--shadow-card);
-		transition: border-color 0.15s, box-shadow 0.15s;
+		transition:
+			border-color 0.15s,
+			box-shadow 0.15s;
 		-webkit-appearance: none;
 	}
 
@@ -230,7 +282,9 @@
 		border-radius: 6px;
 	}
 
-	.eye-btn i { font-size: 17px; }
+	.eye-btn i {
+		font-size: 17px;
+	}
 
 	/* ── Error ── */
 	.error {
@@ -241,8 +295,7 @@
 	}
 
 	/* ── Buttons ── */
-	.btn-login,
-	.btn-signup {
+	.btn-login {
 		width: 100%;
 		font-size: 0.95rem;
 		padding: 0.8rem 1rem;
@@ -254,7 +307,7 @@
 	.divider {
 		display: flex;
 		align-items: center;
-		gap: 0.75rem;
+		gap: 0.5rem;
 		margin: 0.1rem 0;
 	}
 
