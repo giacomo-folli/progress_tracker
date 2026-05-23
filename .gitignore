@@ -7,6 +7,7 @@
 .build/
 .output/
 .vite/
+build/
 
 # Dependencies
 node_modules/

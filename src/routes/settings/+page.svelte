@@ -34,6 +34,8 @@
 			loading = false;
 		}
 	}
+
+	$effect(() => console.log($user));
 </script>
 
 <main class="page settings-page">
@@ -41,7 +43,7 @@
 	<div class="profile-header">
 		<div class="avatar">M</div>
 		<div class="profile-info">
-			<p class="profile-name">Marco Rossi</p>
+			<p class="profile-name">{$user?.user_metadata.display_name}</p>
 			<p class="profile-email">{$user?.email}</p>
 		</div>
 		<i class="ti ti-chevron-right profile-chevron" aria-hidden="true"></i>
@@ -90,7 +92,7 @@
 				<i class="ti ti-info-circle" aria-hidden="true"></i>
 			</span>
 			<span class="row-label">Versione app</span>
-			<span class="row-value">1.4.2</span>
+			<span class="row-value">0.0.1</span>
 		</div>
 	</div>
 

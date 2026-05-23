@@ -1,1 +1,0 @@
-import{M as e,Y as t,_ as n,c as r,i,k as a,s as o,y as s}from"./z23Z6Ibi.js";import"./CT0T0Gak.js";var c=s(`<div><div class="progress-fill svelte-1qjgclg"></div></div>`);function l(s,l){let u=i(l,`pct`,3,0),d=i(l,`compact`,3,!1);var f=c();let p;var m=e(f);t(f),a(()=>{p=r(f,1,`progress-track svelte-1qjgclg`,null,p,{compact:d()}),o(m,`width: ${u()??``}%`)}),n(s,f)}export{l as t};

@@ -2,12 +2,13 @@
 	import ActivityWeek from "$lib/components/home/ActivityWeek.svelte";
 	import SessionCadence from "$lib/components/home/SessionCadence.svelte";
 	import StartSessionCard from "$lib/components/home/StartSessionCard.svelte";
+	import { user } from "$lib/stores/user";
 </script>
 
 <main class="page home-page">
 	<header class="home-header">
-		<p class="page-subtitle">Bentornato</p>
-		<h1 class="large-title">Bro</h1>
+		<p class="page-subtitle">Bentornato/a</p>
+		<h1 class="large-title">{$user?.user_metadata.display_name}</h1>
 	</header>
 
 	<StartSessionCard />

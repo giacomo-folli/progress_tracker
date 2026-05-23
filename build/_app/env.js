@@ -1,1 +1,0 @@
-export const env={"PUBLIC_SUPABASE_ANON_KEY":"sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH","PUBLIC_SUPABASE_URL":"http://127.0.0.1:54321"}

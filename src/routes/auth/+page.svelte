@@ -13,29 +13,35 @@
 	async function handleLogIn() {
 		loading = true;
 		errorMessage = "";
-		const { error } = await supabase.auth.signInWithPassword({
-			email,
-			password,
-		});
-		if (error) errorMessage = error.message;
-		loading = false;
+
+		await supabase.auth
+			.signInWithPassword({
+				email,
+				password,
+			})
+			.catch((error) => (errorMessage = error.message))
+			.finally(() => (loading = false));
 	}
 
 	async function handleSignUp() {
 		loading = true;
 		errorMessage = "";
-		const { error } = await supabase.auth.signUp({
-			email,
-			password,
-			options: {
-				data: {
-					full_name: "AIOOO ZIVERI",
-					display_name: "AIOOO",
+
+		await supabase.auth
+			.signUp({
+				email,
+				password,
+				options: {
+					data: { display_name: name },
 				},
-			},
-		});
-		if (error) errorMessage = error.message;
-		loading = false;
+			})
+			.then(() =>
+				alert(
+					"Controlla la tua casella di posta.\nTi abbiamo mandato un'email di conferma.",
+				),
+			)
+			.catch((error) => (errorMessage = error.message))
+			.finally(() => (loading = false));
 	}
 </script>
 
