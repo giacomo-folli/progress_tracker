@@ -34,8 +34,6 @@
 			loading = false;
 		}
 	}
-
-	$effect(() => console.log($user));
 </script>
 
 <main class="page settings-page">
