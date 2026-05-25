@@ -1,6 +1,7 @@
 <!-- src/routes/auth/+page.svelte -->
 <script lang="ts">
 	import { supabase } from "$lib/supabase";
+	import posthog from "posthog-js";
 
 	let email = $state("");
 	let name = $state("");
@@ -14,34 +15,46 @@
 		loading = true;
 		errorMessage = "";
 
-		await supabase.auth
-			.signInWithPassword({
-				email,
-				password,
-			})
-			.catch((error) => (errorMessage = error.message))
-			.finally(() => (loading = false));
+		const { data, error } = await supabase.auth.signInWithPassword({
+			email,
+			password,
+		});
+
+		if (error) {
+			errorMessage = error.message;
+		} else if (data.user) {
+			posthog.identify(data.user.id, { email: data.user.email });
+			posthog.capture("user_logged_in", { email: data.user.email });
+		}
+
+		loading = false;
 	}
 
 	async function handleSignUp() {
 		loading = true;
 		errorMessage = "";
 
-		await supabase.auth
-			.signUp({
-				email,
-				password,
-				options: {
-					data: { display_name: name },
-				},
-			})
-			.then(() =>
-				alert(
-					"Controlla la tua casella di posta.\nTi abbiamo mandato un'email di conferma.",
-				),
-			)
-			.catch((error) => (errorMessage = error.message))
-			.finally(() => (loading = false));
+		const { data, error } = await supabase.auth.signUp({
+			email,
+			password,
+			options: {
+				data: { display_name: name },
+			},
+		});
+
+		if (error) {
+			errorMessage = error.message;
+		} else {
+			if (data.user) {
+				posthog.identify(data.user.id, { email: data.user.email, name });
+				posthog.capture("user_signed_up", { email: data.user.email });
+			}
+			alert(
+				"Controlla la tua casella di posta.\nTi abbiamo mandato un'email di conferma.",
+			);
+		}
+
+		loading = false;
 	}
 </script>
 

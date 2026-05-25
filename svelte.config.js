@@ -12,7 +12,8 @@ const config = {
 			strict: false
 		}),
 		paths: {
-			base: dev ? '' : '/prossima'
+			base: dev ? '' : '/prossima',
+			relative: false
 		},
 		alias: {
 			$lib: './src/lib'

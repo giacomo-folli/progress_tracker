@@ -5,6 +5,7 @@
 	import CelebrationOverlay from "$lib/components/CelebrationOverlay.svelte";
 	import type { Exercise } from "$lib/types";
 	import { goto } from "$app/navigation";
+	import posthog from "posthog-js";
 
 	type SessionExercise = {
 		id: string;
@@ -54,6 +55,12 @@
 
 		await sessions.logSession(snapshot);
 		celebrating = true;
+
+		posthog.capture("session_logged", {
+			exercise_count: selectedExercises.size,
+			quick_exercise_count: selectedQuick.size,
+			total_exercises: snapshot.length,
+		});
 
 		goto(resolve("/home"));
 	}

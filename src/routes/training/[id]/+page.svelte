@@ -4,6 +4,7 @@
 	import { resolve } from "$app/paths";
 	import { page } from "$app/state";
 	import { sessions } from "$lib/stores/sessions";
+	import posthog from "posthog-js";
 
 	type SessionExercise = {
 		id: string;
@@ -111,6 +112,12 @@
 			completed_at: newDate.toISOString(),
 			notes: editNote.trim() || undefined,
 			liked: false,
+		});
+
+		posthog.capture("session_edited", {
+			session_id: session.id,
+			exercise_count: editExercises.length,
+			has_note: editNote.trim().length > 0,
 		});
 
 		saving = false;
@@ -392,7 +399,9 @@
 			class="delete-btn"
 			onclick={async () => {
 				if (!confirm("Eliminare questa sessione?")) return;
-				await sessions.deleteSession(session!.id!);
+				const sessionId = session!.id!;
+				posthog.capture("session_deleted", { session_id: sessionId });
+				await sessions.deleteSession(sessionId);
 				goto(resolve("/home"));
 			}}
 		>

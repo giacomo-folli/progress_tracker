@@ -4,11 +4,14 @@
 	import { sessions } from "$lib/stores/sessions";
 	import { user } from "$lib/stores/user";
 	import { supabase } from "$lib/supabase";
+	import posthog from "posthog-js";
 
 	let loading = $state(false);
 
 	async function handleLogout() {
 		loading = true;
+		posthog.capture("user_logged_out");
+		posthog.reset();
 		await supabase.auth.signOut();
 		loading = false;
 	}
@@ -18,6 +21,7 @@
 			confirm("Resettare i progressi correnti? Lo storico rimarrà intatto.")
 		) {
 			loading = true;
+			posthog.capture("exercise_progress_reset");
 			exercises.clearProgress();
 			loading = false;
 		}
@@ -30,6 +34,7 @@
 			)
 		) {
 			loading = true;
+			posthog.capture("training_history_cleared");
 			sessions.clearSessions();
 			loading = false;
 		}

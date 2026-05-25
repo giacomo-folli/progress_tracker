@@ -33,6 +33,7 @@
     "@types/luxon": "^3.7.1",
     "@vite-pwa/sveltekit": "^1.1.0",
     "luxon": "^3.7.2",
+    "posthog-js": "^1.376.0",
     "yaml": "^2.8.4"
   }
 }

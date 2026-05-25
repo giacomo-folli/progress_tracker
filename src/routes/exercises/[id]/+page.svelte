@@ -4,6 +4,7 @@
 	import { exercises } from "$lib/stores/exercises";
 	import { page } from "$app/state";
 	import type { Exercise } from "$lib/types";
+	import posthog from "posthog-js";
 
 	const id = $state(page.params.id);
 
@@ -32,11 +33,26 @@
 	function completeStep() {
 		if (!exercise) return;
 
+		posthog.capture("exercise_step_completed", {
+			exercise_id: exercise.id,
+			exercise_name: exercise.name,
+			step_index: exercise.current_step_index ?? 0,
+			steps_completed: completedCount + 1,
+			total_steps: total,
+		});
+
 		exercises.completeCurrentStep(exercise.id);
 	}
 
 	function undoStep() {
 		if (!exercise) return;
+
+		posthog.capture("exercise_step_undone", {
+			exercise_id: exercise.id,
+			exercise_name: exercise.name,
+			step_index: exercise.current_step_index ?? 0,
+		});
+
 		exercises.undoLastCompletion(exercise.id);
 	}
 </script>
