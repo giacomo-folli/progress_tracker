@@ -4,6 +4,7 @@ import {
 	loadExercises,
 	updateExerciseProgress,
 	updateStepCompletion,
+	insertExercise,
 } from "../utils/storage";
 
 function createExercisesStore() {
@@ -50,6 +51,16 @@ function createExercisesStore() {
 			await updateExerciseProgress(exercise.id, prevIndex);
 
 			set((await loadExercises()) || []);
+		},
+
+		async addExercise(
+			name: string,
+			stepDescriptions: string[],
+		): Promise<boolean> {
+			const newExercise = await insertExercise(name, stepDescriptions);
+			if (!newExercise) return false;
+			update((current) => [...current, newExercise]);
+			return true;
 		},
 
 		set(newExercises?: Exercise[]) {

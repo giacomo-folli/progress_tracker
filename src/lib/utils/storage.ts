@@ -203,3 +203,49 @@ export async function updateTrainingSession(
 	}
 	return data as TrainingSession;
 }
+
+/**
+ * Inserts a new exercise and its ordered steps into Supabase.
+ * Steps are created in the order provided, with step_index assigned automatically.
+ * Returns the full exercise with steps, or null on failure.
+ */
+export async function insertExercise(
+	name: string,
+	stepDescriptions: string[],
+): Promise<Exercise | null> {
+	try {
+		const { data: exercise, error: exerciseError } = await supabase
+			.from("exercises")
+			.insert({ name, type: "exercise", current_step_index: 0 })
+			.select("id, name, icon, type, current_step_index")
+			.single();
+
+		if (exerciseError || !exercise) {
+			console.error("Failed to insert exercise:", exerciseError?.message);
+			return null;
+		}
+
+		const steps = stepDescriptions.map((description, i) => ({
+			exercise_id: exercise.id,
+			description,
+			step_index: i,
+			completed: false,
+		}));
+
+		const { error: stepsError } = await supabase.from("steps").insert(steps);
+
+		if (stepsError) {
+			console.error("Failed to insert steps:", stepsError.message);
+			// Roll back the orphaned exercise
+			await supabase.from("exercises").delete().eq("id", exercise.id);
+			return null;
+		}
+
+		// Return a fresh load so steps are shaped exactly like the rest of the store
+		const full = await loadExercises();
+		return full?.find((e) => e.id === exercise.id) ?? null;
+	} catch (err) {
+		console.error("Unexpected failure inserting exercise:", err);
+		return null;
+	}
+}
