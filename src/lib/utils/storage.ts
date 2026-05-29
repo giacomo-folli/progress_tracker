@@ -249,3 +249,22 @@ export async function insertExercise(
 		return null;
 	}
 }
+
+export async function removeExercise(exerciseId: string): Promise<boolean> {
+	try {
+		const { error } = await supabase
+			.from("exercises")
+			.delete()
+			.eq("id", exerciseId);
+
+		if (error) {
+			console.error("Failed to delete exercise:", error.message);
+			return false;
+		}
+
+		return true;
+	} catch (error) {
+		console.error("Unexpected failure inserting exercise:", error);
+		return false;
+	}
+}

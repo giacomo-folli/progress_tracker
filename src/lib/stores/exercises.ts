@@ -5,6 +5,7 @@ import {
 	updateExerciseProgress,
 	updateStepCompletion,
 	insertExercise,
+	removeExercise,
 } from "../utils/storage";
 
 function createExercisesStore() {
@@ -86,6 +87,14 @@ function createExercisesStore() {
 
 				return next;
 			});
+		},
+
+		async remove(exerciseId: string): Promise<boolean> {
+			const success = await removeExercise(exerciseId);
+			if (success) {
+				update((current) => current.filter((e) => e.id !== exerciseId));
+			}
+			return true;
 		},
 	};
 }

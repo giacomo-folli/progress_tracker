@@ -3,8 +3,10 @@
 	import ProgressBar from "$lib/components/ProgressBar.svelte";
 	import { exercises } from "$lib/stores/exercises";
 	import { page } from "$app/state";
+	import { goto } from "$app/navigation";
 	import type { Exercise } from "$lib/types";
 	import posthog from "posthog-js";
+	import { resolve } from "$app/paths";
 
 	const id = $state(page.params.id);
 
@@ -29,6 +31,9 @@
 		exercise?.steps?.[exercise.current_step_index!] ?? null,
 	);
 	let hasCompleted = $derived((exercise?.steps ?? []).some((s) => s.completed));
+
+	// Delete confirmation state
+	let showDeleteConfirm = $state(false);
 
 	function completeStep() {
 		if (!exercise) return;
@@ -55,12 +60,54 @@
 
 		exercises.undoLastCompletion(exercise.id);
 	}
+
+	function confirmDelete() {
+		showDeleteConfirm = true;
+	}
+
+	function cancelDelete() {
+		showDeleteConfirm = false;
+	}
+
+	function deleteExercise() {
+		if (!exercise) return;
+
+		posthog.capture("exercise_deleted", {
+			exercise_id: exercise.id,
+			exercise_name: exercise.name,
+		});
+
+		exercises.remove(exercise.id);
+		goto(resolve("/exercises"));
+	}
+
+	function handleBackdropClick(e: MouseEvent) {
+		if ((e.target as HTMLElement).classList.contains("confirm-backdrop")) {
+			cancelDelete();
+		}
+	}
+
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === "Escape") cancelDelete();
+	}
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 {#if exercise}
 	<div class="page-layout">
 		<header class="ex-header">
-			<h1>{exercise.name}</h1>
+			<div class="title-row">
+				<h1>{exercise.name}</h1>
+				<button
+					class="delete-btn"
+					onclick={confirmDelete}
+					aria-label="Elimina esercizio"
+					title="Elimina esercizio"
+				>
+					<i class="ti ti-trash"></i>
+				</button>
+			</div>
 			<div class="progress-row">
 				<ProgressBar {pct} />
 				<span class="pct-label">{pct}%</span>
@@ -113,6 +160,50 @@
 	</div>
 {/if}
 
+<!-- Delete confirmation sheet -->
+{#if showDeleteConfirm}
+	<div
+		class="confirm-backdrop"
+		role="presentation"
+		onclick={handleBackdropClick}
+	>
+		<div
+			class="confirm-sheet ios-card"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="confirm-title"
+		>
+			<div class="drag-handle"></div>
+
+			<div class="confirm-body">
+				<div class="confirm-icon">
+					<i class="ti ti-trash"></i>
+				</div>
+				<h2 id="confirm-title">Elimina esercizio</h2>
+				<p class="confirm-desc">
+					Vuoi eliminare <strong>{exercise?.name}</strong>? Questa azione non
+					può essere annullata.
+				</p>
+			</div>
+
+			<div class="confirm-actions">
+				<button
+					class="btn btn--danger confirm-delete-btn"
+					onclick={deleteExercise}
+				>
+					Elimina
+				</button>
+				<button
+					class="btn btn--secondary confirm-cancel-btn"
+					onclick={cancelDelete}
+				>
+					Annulla
+				</button>
+			</div>
+		</div>
+	</div>
+{/if}
+
 <style>
 	.page-layout {
 		display: flex;
@@ -124,12 +215,44 @@
 		padding-bottom: 2rem;
 	}
 
+	/* ── Header ── */
+	.title-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+		margin-bottom: 0.75rem;
+	}
+
 	.ex-header h1 {
 		margin: 0;
 		font-size: 1.4rem;
 		font-weight: 700;
 		letter-spacing: -0.03em;
 		color: var(--color-text);
+	}
+
+	/* ── Delete button ── */
+	.delete-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.1rem;
+		height: 2.1rem;
+		border-radius: 50%;
+		background: transparent;
+		color: var(--color-danger);
+		font-size: 1.05rem;
+		padding: 0;
+		flex-shrink: 0;
+		transition:
+			background 0.15s ease,
+			color 0.15s ease;
+		background: rgba(255, 59, 48, 0.1);
+	}
+
+	.delete-btn:active {
+		background: rgba(255, 59, 48, 0.18);
 	}
 
 	.progress-row {
@@ -155,7 +278,6 @@
 		color: var(--color-muted);
 	}
 
-	/* Etichette di sezione standardizzate (come in esercizi rapidi) */
 	.section-label {
 		margin: 0 0 0.75rem;
 		font-size: 0.75rem;
@@ -165,7 +287,6 @@
 		color: var(--color-muted);
 	}
 
-	/* Box passo corrente */
 	.current-step-box {
 		background: var(--color-card, #1c1c1e);
 		border: 1px solid var(--color-border, #2c2c2e);
@@ -202,7 +323,7 @@
 	}
 
 	.complete-banner {
-		background: rgba(44, 151, 75, 0.15); /* Accent dim */
+		background: rgba(44, 151, 75, 0.15);
 		color: var(--color-accent, #2c974b);
 		border-radius: 12px;
 		padding: 1rem 1.5rem;
@@ -212,7 +333,6 @@
 		border: 1px solid rgba(44, 151, 75, 0.3);
 	}
 
-	/* Sezione tutti i passi */
 	.steps-section-wrapper {
 		display: flex;
 		flex-direction: column;
@@ -226,7 +346,7 @@
 	}
 
 	.steps-header .section-label {
-		margin: 0; /* Rimuove il margine inferiore essendoci flex-box */
+		margin: 0;
 	}
 
 	.steps-section-card {
@@ -253,7 +373,112 @@
 		border-color: rgba(255, 255, 255, 0.2);
 	}
 
-	/* Adattamenti per il mobile */
+	/* ── Confirm sheet ── */
+	.confirm-backdrop {
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.4);
+		display: flex;
+		align-items: flex-end;
+		justify-content: center;
+		z-index: 100;
+		animation: fade-in 0.18s ease;
+	}
+
+	@media (min-width: 520px) {
+		.confirm-backdrop {
+			align-items: center;
+			padding: 1rem;
+		}
+	}
+
+	.confirm-sheet {
+		width: 100%;
+		max-width: 480px;
+		border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+		padding: 0;
+		box-shadow: 0 -2px 24px rgba(0, 0, 0, 0.14);
+		animation: slide-up 0.24s cubic-bezier(0.32, 1.2, 0.6, 1);
+		overflow: hidden;
+	}
+
+	@media (min-width: 520px) {
+		.confirm-sheet {
+			border-radius: var(--radius-lg);
+			box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+			animation: pop-in 0.22s cubic-bezier(0.32, 1.2, 0.6, 1);
+		}
+	}
+
+	.drag-handle {
+		width: 36px;
+		height: 4px;
+		border-radius: 2px;
+		background: var(--color-track);
+		margin: 0.75rem auto 0;
+	}
+
+	@media (min-width: 520px) {
+		.drag-handle {
+			display: none;
+		}
+	}
+
+	.confirm-body {
+		padding: 1.5rem 1.5rem 1rem;
+		text-align: center;
+	}
+
+	.confirm-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 3rem;
+		height: 3rem;
+		border-radius: 50%;
+		background: rgba(255, 59, 48, 0.12);
+		color: var(--color-danger);
+		font-size: 1.4rem;
+		margin-bottom: 0.85rem;
+	}
+
+	.confirm-body h2 {
+		margin: 0 0 0.5rem;
+		font-size: 1.05rem;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		color: var(--color-text);
+	}
+
+	.confirm-desc {
+		margin: 0;
+		font-size: 0.875rem;
+		color: var(--color-muted);
+		line-height: 1.5;
+	}
+
+	.confirm-desc strong {
+		color: var(--color-text);
+		font-weight: 600;
+	}
+
+	.confirm-actions {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 0.5rem 1.25rem 1.5rem;
+	}
+
+	.confirm-delete-btn,
+	.confirm-cancel-btn {
+		width: 100%;
+		text-align: center;
+		border-radius: var(--radius-card);
+		padding: 0.8rem;
+		font-size: 0.95rem;
+	}
+
+	/* ── Animations ── */
 	@media (max-width: 480px) {
 		.current-step-box {
 			flex-direction: column;
@@ -264,6 +489,37 @@
 		.btn-complete {
 			width: 100%;
 			text-align: center;
+		}
+	}
+
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes slide-up {
+		from {
+			transform: translateY(56px);
+			opacity: 0;
+		}
+		to {
+			transform: translateY(0);
+			opacity: 1;
+		}
+	}
+
+	@keyframes pop-in {
+		from {
+			transform: scale(0.93);
+			opacity: 0;
+		}
+		to {
+			transform: scale(1);
+			opacity: 1;
 		}
 	}
 </style>
