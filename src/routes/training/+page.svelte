@@ -159,7 +159,8 @@
 	<button
 		class="btn btn-log"
 		onclick={logSession}
-		disabled={(selectedExercises.size === 0 && selectedQuick.size === 0) || celebrating}
+		disabled={(selectedExercises.size === 0 && selectedQuick.size === 0) ||
+			celebrating}
 	>
 		Registra sessione
 	</button>
@@ -170,9 +171,11 @@
 		max-width: 600px;
 		margin: 0 auto;
 		width: 100%;
-	}	.page-title {
+	}
+
+	.page-title {
 		margin: 0 0 1.25rem;
-		padding: 0 1rem;
+		padding: 0;
 	}
 
 	.training-layout {
@@ -182,7 +185,7 @@
 		width: 100%;
 		max-width: 600px;
 		margin: 0 auto;
-		padding: 0 1rem;
+		padding: 0;
 	}
 
 	/* Pushes content above the fixed bar height + a little breathing room */
@@ -212,7 +215,9 @@
 		border-bottom: 1px solid var(--color-border);
 		display: flex;
 		align-items: center;
-		transition: background 0.15s ease, color 0.15s ease;
+		transition:
+			background 0.15s ease,
+			color 0.15s ease;
 	}
 
 	.program-item:last-child {
@@ -374,7 +379,9 @@
 		color: white;
 		border: none;
 		cursor: pointer;
-		transition: opacity 150ms ease, transform 150ms ease;
+		transition:
+			opacity 150ms ease,
+			transform 150ms ease;
 	}
 
 	.btn-log:active:not(:disabled) {

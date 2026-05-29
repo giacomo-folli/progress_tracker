@@ -162,7 +162,7 @@
 		</section>
 	</div>
 {:else}
-	<div class="page-layout">
+	<div class="page">
 		<p>Exercise not found.</p>
 	</div>
 {/if}
@@ -216,9 +216,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1.5rem;
-		max-width: 600px;
-		width: 100%;
-		margin: 0 auto;
 		padding-bottom: 2rem;
 	}
 
@@ -227,7 +224,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: flex-start;
-		padding: 0 1rem;
+		padding: 0;
 	}
 
 	.nav-back {
@@ -243,7 +240,7 @@
 
 	/* ── Header ── */
 	.ex-header {
-		padding: 0 1rem;
+		padding: 0;
 	}
 
 	.title-row {
@@ -330,7 +327,7 @@
 
 	/* ── Current Section ── */
 	.current-section {
-		padding: 0 1rem;
+		padding: 0;
 	}
 
 	.current-step-box {
@@ -390,7 +387,7 @@
 	.steps-section-wrapper {
 		display: flex;
 		flex-direction: column;
-		padding: 0 1rem;
+		padding: 0;
 	}
 
 	.steps-header {
