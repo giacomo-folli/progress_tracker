@@ -142,7 +142,7 @@
 	.settings-page {
 		display: flex;
 		flex-direction: column;
-		padding: 0 1rem calc(var(--tab-bar-height) + 1rem);
+		padding: 0 0 calc(var(--tab-bar-height) + 1rem);
 	}
 
 	/* Profile header */

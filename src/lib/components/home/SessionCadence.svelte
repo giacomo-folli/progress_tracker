@@ -5,14 +5,12 @@
 	import Icon from "../Icon.svelte";
 
 	const recentSessions = $derived(
-		$sessions
-			.slice(0, 5)
-			.map((s) => ({
-				id: s.id,
-				title: s.exercises.map((e) => e.name).join(" - "),
-				exercisesCount: s.exercises.length,
-				date: DateTime.fromISO(s.completed_at).toFormat("LLL d"),
-			})),
+		$sessions.slice(0, 5).map((s) => ({
+			id: s.id,
+			title: s.exercises.map((e) => e.name).join(" - "),
+			exercisesCount: s.exercises.length,
+			date: DateTime.fromISO(s.completed_at).toFormat("LLL d"),
+		})),
 	);
 </script>
 
@@ -21,7 +19,10 @@
 
 	<div class="session-list">
 		{#each recentSessions as session (session.id)}
-			<a href={resolve("/training/[id]", { id: session.id ?? "" })} class="session-card ios-card ios-card--tappable">
+			<a
+				href={resolve("/training/[id]", { id: session.id ?? "" })}
+				class="session-card ios-card ios-card--tappable"
+			>
 				<div class="card-left">
 					<h3 class="session-name">{session.date}</h3>
 					<span class="session-meta">
@@ -39,7 +40,7 @@
 <style>
 	.recent-section {
 		margin-bottom: 2rem;
-		padding: 0 1rem;
+		padding: 0;
 	}
 
 	.ios-section-label {

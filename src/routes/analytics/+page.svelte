@@ -177,7 +177,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1.25rem;
-		padding: 0 1rem 2rem;
+		padding: 0 0 2rem;
 	}
 
 	.page-header {

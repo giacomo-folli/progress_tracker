@@ -213,7 +213,7 @@
 	/* ── Header ── */
 	.exercises-header {
 		margin-bottom: 1.25rem;
-		padding: 0 1rem;
+		padding: 0 0.5rem;
 	}
 
 	.header-row {
@@ -251,7 +251,7 @@
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
 		gap: 12px;
-		padding: 0 1rem;
+		padding: 0;
 	}
 
 	@media (min-width: 600px) {
