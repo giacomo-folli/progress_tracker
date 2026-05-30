@@ -33,7 +33,7 @@ function getCorsHeaders(request: Request): HeadersInit {
 async function retryWithBackoff<T>(
 	fn: () => Promise<T>,
 	maxRetries = 3,
-	delayMs = 1000,
+	delayMs = 2000,
 ): Promise<T> {
 	let lastError: any;
 	for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -212,7 +212,7 @@ export default {
 		if (stream === true) {
 			try {
 				const responseStream = await ai.models.generateContentStream({
-					model: "gemini-2.0-flash-lite",
+					model: "gemma-3",
 					contents,
 					config,
 				});
@@ -276,7 +276,7 @@ export default {
 			const response = await retryWithBackoff(
 				async () => {
 					return await ai.models.generateContent({
-						model: "gemini-2.0-flash-lite",
+						model: "gemma-3",
 						contents,
 						config,
 					});
