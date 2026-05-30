@@ -258,11 +258,21 @@ Requirements:
 		});
 
 		let cleanRaw = raw.trim();
-		if (cleanRaw.startsWith("```")) {
-			cleanRaw = cleanRaw.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+
+		// Extract JSON object if wrapped in conversational text or markdown code blocks
+		const firstBrace = cleanRaw.indexOf("{");
+		const lastBrace = cleanRaw.lastIndexOf("}");
+		if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+			cleanRaw = cleanRaw.substring(firstBrace, lastBrace + 1);
 		}
 
-		return JSON.parse(cleanRaw) as ExerciseSuggestion;
+		try {
+			return JSON.parse(cleanRaw) as ExerciseSuggestion;
+		} catch (parseErr) {
+			console.error("gemini.suggestExercise: JSON parse failed. Raw response:", raw);
+			console.error("Cleaned response tried to parse:", cleanRaw);
+			throw parseErr;
+		}
 	} catch (err) {
 		console.error("gemini.suggestExercise: failed to parse response", err);
 		return null;
