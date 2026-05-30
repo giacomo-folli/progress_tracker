@@ -3,6 +3,7 @@
 	import { exerciseProgress, exercises } from "$lib/stores/exercises";
 	import { suggestExercise } from "$lib/gemini";
 	import Icon from "$lib/components/Icon.svelte";
+	import { slide } from "svelte/transition";
 
 	let showModal = false;
 	let name = "";
@@ -10,6 +11,11 @@
 	let nameError = "";
 	let stepsError = "";
 	let generating = false;
+
+	// Personalized setup state
+	let creationMode: "manual" | "ai" = "manual";
+	let goal = "";
+	let currentLevel = "";
 
 	async function generateStepsWithAI() {
 		if (!name.trim()) {
@@ -22,22 +28,37 @@
 		stepsError = "";
 
 		try {
-			const suggestion = await suggestExercise(name.trim());
+			const suggestion = await suggestExercise(
+				name.trim(),
+				goal.trim(),
+				currentLevel.trim(),
+			);
 			if (suggestion) {
 				stepsRaw = suggestion.steps.join("\n");
-				if (suggestion.name && name.toLowerCase().trim() !== suggestion.name.toLowerCase().trim()) {
+				if (
+					suggestion.name &&
+					name.toLowerCase().trim() !== suggestion.name.toLowerCase().trim()
+				) {
 					name = suggestion.name;
 				}
 			} else {
-				stepsError = "I server Gemini sono temporaneamente sovraccarichi. Attendi qualche istante e riprova.";
+				stepsError =
+					"I server Gemini sono temporaneamente sovraccarichi. Attendi qualche istante e riprova.";
 			}
 		} catch (err: any) {
 			console.error("AI generation failed:", err);
 			const msg = String(err).toLowerCase();
-			if (msg.includes("503") || msg.includes("unavailable") || msg.includes("demand") || msg.includes("busy")) {
-				stepsError = "I server di Google sono temporaneamente sovraccarichi. Riprova tra qualche istante.";
+			if (
+				msg.includes("503") ||
+				msg.includes("unavailable") ||
+				msg.includes("demand") ||
+				msg.includes("busy")
+			) {
+				stepsError =
+					"I server di Google sono temporaneamente sovraccarichi. Riprova tra qualche istante.";
 			} else {
-				stepsError = "Errore durante la generazione. Verifica la tua connessione e riprova.";
+				stepsError =
+					"Errore durante la generazione. Verifica la tua connessione e riprova.";
 			}
 		} finally {
 			generating = false;
@@ -48,6 +69,9 @@
 		showModal = true;
 		name = "";
 		stepsRaw = "";
+		goal = "";
+		currentLevel = "";
+		creationMode = "manual";
 		nameError = "";
 		stepsError = "";
 	}
@@ -116,8 +140,12 @@
 		<div class="empty-state">
 			<Icon name="mood-puzzled" size={48} class="empty-icon" />
 			<h3 class="empty-title">Nessun esercizio</h3>
-			<p class="empty-desc">Crea il tuo primo esercizio per iniziare ad allenarti!</p>
-			<button class="btn btn-primary empty-cta" on:click={openModal}>Aggiungi esercizio</button>
+			<p class="empty-desc">
+				Crea il tuo primo esercizio per iniziare ad allenarti!
+			</p>
+			<button class="btn btn-primary empty-cta" on:click={openModal}
+				>Aggiungi esercizio</button
+			>
 		</div>
 	{:else}
 		<div class="exercises-grid">
@@ -171,24 +199,80 @@
 					{#if nameError}<span class="field-error">{nameError}</span>{/if}
 				</div>
 
-				<div class="field">
-					<div class="field-header-row">
-						<span class="ios-section-label">
-							Step <span class="label-hint">— uno per riga</span>
-						</span>
+				<div class="segmented-control">
+					<button
+						type="button"
+						class="segment-btn"
+						class:active={creationMode === "manual"}
+						on:click={() => (creationMode = "manual")}
+					>
+						<Icon name="pencil" size={14} /> Manuale
+					</button>
+					<button
+						type="button"
+						class="segment-btn"
+						class:active={creationMode === "ai"}
+						on:click={() => (creationMode = "ai")}
+					>
+						<Icon name="sparkles" size={14} /> Genera con AI
+					</button>
+				</div>
+
+				{#if creationMode === "ai"}
+					<div transition:slide={{ duration: 200 }} class="ai-fields">
+						<div class="field">
+							<span class="ios-section-label">Obiettivo (Goal)</span>
+							<input
+								id="ex-goal"
+								type="text"
+								bind:value={goal}
+								placeholder="es. 3 serie da 10 reps, 5 minuti, 50kg..."
+								autocomplete="off"
+							/>
+						</div>
+
+						<div class="field">
+							<span class="ios-section-label">Livello attuale</span>
+							<input
+								id="ex-level"
+								type="text"
+								bind:value={currentLevel}
+								placeholder="es. 3 serie da 5 reps, principiante..."
+								autocomplete="off"
+							/>
+						</div>
+
 						<button
 							type="button"
-							class="ai-gen-btn"
+							class="premium-ai-btn"
 							on:click={generateStepsWithAI}
 							disabled={generating || !name.trim()}
 							aria-label="Genera step con AI"
 						>
 							{#if generating}
-								<span class="spinner"></span> Generando...
+								<span class="spinner white-spinner"></span> Generazione in corso...
 							{:else}
-								<Icon name="sparkles" size={12} /> Genera con AI
+								<Icon name="zap" size={14} /> Genera piano con AI
 							{/if}
 						</button>
+					</div>
+				{/if}
+
+				<div class="field">
+					<div class="field-header-row">
+						<span class="ios-section-label">
+							Step <span class="label-hint">— uno per riga</span>
+						</span>
+						{#if creationMode === "manual"}
+							<button
+								type="button"
+								class="ai-gen-btn"
+								on:click={() => (creationMode = "ai")}
+								aria-label="Usa Generatore AI"
+							>
+								<Icon name="sparkles" size={12} /> Genera con AI
+							</button>
+						{/if}
 					</div>
 					<textarea
 						id="ex-steps"
@@ -202,8 +286,11 @@
 			</div>
 
 			<div class="modal-footer">
-				<button class="btn btn--secondary" on:click={closeModal}>Annulla</button>
-				<button class="btn btn--primary" on:click={handleSubmit}>Aggiungi</button>
+				<button class="btn btn--secondary" on:click={closeModal}>Annulla</button
+				>
+				<button class="btn btn--primary" on:click={handleSubmit}
+					>Aggiungi</button
+				>
 			</div>
 		</div>
 	</div>
@@ -484,6 +571,10 @@
 		-webkit-appearance: none;
 	}
 
+	.field input {
+		resize: none;
+	}
+
 	.field input:focus,
 	.field textarea:focus {
 		border-color: var(--color-accent);
@@ -544,5 +635,92 @@
 			transform: scale(1);
 			opacity: 1;
 		}
+	}
+
+	/* ── Segmented Control ── */
+	.segmented-control {
+		display: flex;
+		background: var(--color-track);
+		border-radius: var(--radius-card);
+		padding: 3px;
+		margin-bottom: 0.25rem;
+	}
+
+	.segment-btn {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+		border: none;
+		background: transparent;
+		color: var(--color-muted);
+		padding: 0.5rem;
+		font-size: 0.85rem;
+		font-weight: 600;
+		border-radius: 12px;
+		cursor: pointer;
+		transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+		height: 36px;
+	}
+
+	.segment-btn:active {
+		transform: scale(0.97);
+	}
+
+	.segment-btn.active {
+		background: var(--color-card);
+		color: var(--color-accent);
+		box-shadow: var(--shadow-card);
+	}
+
+	/* ── AI Fields & Premium Button ── */
+	.ai-fields {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		overflow: hidden;
+	}
+
+	.premium-ai-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		background: linear-gradient(
+			135deg,
+			var(--color-accent) 0%,
+			var(--color-accent-light) 100%
+		);
+		color: #ffffff;
+		border: none;
+		border-radius: var(--radius-card);
+		padding: 0.75rem 1rem;
+		font-size: 0.9rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		box-shadow: 0 4px 12px rgba(45, 106, 79, 0.25);
+	}
+
+	.premium-ai-btn:hover:not(:disabled) {
+		opacity: 0.95;
+		transform: translateY(-1px);
+		box-shadow: 0 6px 16px rgba(45, 106, 79, 0.35);
+	}
+
+	.premium-ai-btn:active:not(:disabled) {
+		transform: scale(0.98);
+	}
+
+	.premium-ai-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+		box-shadow: none;
+	}
+
+	.white-spinner {
+		border-color: #ffffff !important;
+		border-top-color: transparent !important;
 	}
 </style>

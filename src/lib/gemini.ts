@@ -192,10 +192,12 @@ export async function* streamText(
  * Returns a typed object ready to pass to exercises.addExercise().
  */
 export async function suggestExercise(
-	userPrompt: string,
+	name: string,
+	goal?: string,
+	currentLevel?: string,
 ): Promise<ExerciseSuggestion | null> {
 	const systemPrompt = `
-You are an expert personal trainer. Design a progressive overload workout plan for the given exercise or fitness goal.
+You are an expert personal trainer. Design a progressive overload workout plan for the given exercise name, tailoring the steps specifically to the user's starting baseline (current level) and ultimate goal.
 Return ONLY a JSON object matching this schema:
 {
   "name": "Refined exercise name",
@@ -204,13 +206,21 @@ Return ONLY a JSON object matching this schema:
 }
 Requirements:
 1. Generate between 3 to 6 steps.
-2. Steps must represent a progression timeline. The first step is the baseline, and each subsequent step must slightly increase the difficulty (e.g. adding weight, reps, sets, or duration) without being too easy or too hard.
+2. Steps must represent a progression timeline. The first step MUST be at or near their current level / baseline. Each subsequent step must slightly increase the difficulty (e.g. adding weight, reps, sets, or duration) progressively moving towards or achieving the specified goal.
 3. Keep steps extremely concise and measurable. Use this exact format:
    - "3 sets of 10 reps (40 kg)"
    - "3 sets of 12 reps (40 kg)"
    - "3 sets of 10 reps (44 kg)"
    - Or "3 sets of 1 min (Hold plank)"
 `.trim();
+
+	let userPrompt = `Exercise Name: ${name}`;
+	if (goal) {
+		userPrompt += `\nGoal / Target: ${goal}`;
+	}
+	if (currentLevel) {
+		userPrompt += `\nCurrent Baseline / Level: ${currentLevel}`;
+	}
 
 	try {
 		const raw = await generateText(`${systemPrompt}\n\nUser: ${userPrompt}`, {
