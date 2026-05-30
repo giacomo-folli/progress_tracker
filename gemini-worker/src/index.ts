@@ -212,7 +212,7 @@ export default {
 		if (stream === true) {
 			try {
 				const responseStream = await ai.models.generateContentStream({
-					model: "gemma-3",
+					model: "gemini-2.5-flash",
 					contents,
 					config,
 				});
@@ -276,7 +276,7 @@ export default {
 			const response = await retryWithBackoff(
 				async () => {
 					return await ai.models.generateContent({
-						model: "gemma-3",
+						model: "gemini-2.5-flash",
 						contents,
 						config,
 					});

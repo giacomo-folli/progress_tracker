@@ -52,6 +52,7 @@ export async function generateText(
 		},
 		body: JSON.stringify({
 			prompt,
+			model: options.model,
 			temperature: options.temperature,
 			maxOutputTokens: options.maxOutputTokens,
 			responseMimeType: options.responseMimeType,
@@ -85,6 +86,7 @@ export async function chat(
 		},
 		body: JSON.stringify({
 			history: messages,
+			model: options.model,
 			temperature: options.temperature,
 			maxOutputTokens: options.maxOutputTokens,
 			responseMimeType: options.responseMimeType,
@@ -122,6 +124,7 @@ export async function* streamText(
 		body: JSON.stringify({
 			prompt,
 			stream: true,
+			model: options.model,
 			temperature: options.temperature,
 			maxOutputTokens: options.maxOutputTokens,
 		}),
