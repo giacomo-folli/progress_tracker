@@ -1,3 +1,5 @@
+import { ExerciseType } from "$lib/constants";
+
 /** Represents an individual step in a training exercise. */
 export interface Step {
 	id: string;
@@ -15,7 +17,7 @@ export interface Exercise {
 	icon?: string;
 	steps?: Step[];
 	current_step_index?: number;
-	type: "exercise" | "quick-exercise";
+	type: ExerciseType;
 }
 
 /** Represents a completed training session with metadata and the

@@ -5,11 +5,12 @@
 	import { sessions } from "$lib/stores/sessions";
 	import posthog from "posthog-js";
 	import Icon from "$lib/components/Icon.svelte";
+	import { ExerciseType } from "$lib/constants";
 
 	type SessionExercise = {
 		id: string;
 		name: string;
-		type: "exercise" | "quick-exercise";
+		type: ExerciseType;
 		icon?: string;
 		step_label?: string;
 	};
@@ -26,10 +27,10 @@
 	);
 
 	const programExercises = $derived(
-		exercises.filter((e) => e.type === "exercise"),
+		exercises.filter((e) => e.type === ExerciseType.EXERCISE),
 	);
 	const quickExercises = $derived(
-		exercises.filter((e) => e.type === "quick-exercise"),
+		exercises.filter((e) => e.type === ExerciseType.QUICK_EXERCISE),
 	);
 
 	// ── Date helpers ────────────────────────────────────────────────────────────
@@ -126,10 +127,10 @@
 
 	// Derived counters for edit preview
 	const editProgram = $derived(
-		editExercises.filter((e) => e.type === "exercise"),
+		editExercises.filter((e) => e.type === ExerciseType.EXERCISE),
 	);
 	const editQuick = $derived(
-		editExercises.filter((e) => e.type === "quick-exercise"),
+		editExercises.filter((e) => e.type === ExerciseType.QUICK_EXERCISE),
 	);
 </script>
 
@@ -464,10 +465,6 @@
 		color: var(--color-accent);
 	}
 
-	.edit-btn i {
-		font-size: 15px;
-	}
-
 	/* ── Header (view) ── */
 	.session-header {
 		display: flex;
@@ -485,11 +482,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	}
-
-	.header-badge i {
-		font-size: 22px;
-		color: var(--color-accent);
 	}
 
 	.header-text {
@@ -535,13 +527,6 @@
 		align-items: flex-start;
 	}
 
-	.note-icon {
-		font-size: 1rem;
-		color: var(--color-accent);
-		margin-top: 0.1rem;
-		flex-shrink: 0;
-	}
-
 	.note-text {
 		margin: 0;
 		font-size: 0.9rem;
@@ -563,12 +548,6 @@
 		flex-direction: column;
 		align-items: center;
 		gap: 0.3rem;
-	}
-
-	.card-icon {
-		font-size: 1.25rem;
-		color: var(--color-accent);
-		margin-bottom: 0.2rem;
 	}
 
 	.summary-value {
@@ -633,11 +612,6 @@
 		justify-content: center;
 	}
 
-	.ex-bullet i {
-		font-size: 14px;
-		color: var(--color-accent);
-	}
-
 	.ex-body {
 		flex: 1;
 		display: flex;
@@ -678,13 +652,6 @@
 		text-overflow: ellipsis;
 	}
 
-	.ex-chevron {
-		font-size: 14px;
-		color: var(--color-muted);
-		opacity: 0.5;
-		flex-shrink: 0;
-	}
-
 	/* ── Quick grid (view) ── */
 	.quick-grid {
 		display: grid;
@@ -706,10 +673,6 @@
 	.quick-icon {
 		font-size: 1.4rem;
 		line-height: 1;
-	}
-	.quick-icon-fallback {
-		font-size: 1.1rem;
-		color: var(--color-accent);
 	}
 
 	.quick-name {
@@ -740,10 +703,6 @@
 		display: flex;
 		align-items: center;
 		gap: 0.4rem;
-	}
-
-	.edit-section-title i {
-		font-size: 13px;
 	}
 
 	.edit-section-count {
@@ -871,10 +830,6 @@
 		transition: opacity 0.15s;
 	}
 
-	.remove-btn i {
-		font-size: 20px;
-	}
-
 	.remove-btn:hover {
 		opacity: 0.7;
 	}
@@ -904,11 +859,6 @@
 		padding: 3rem 1.5rem;
 		text-align: center;
 		color: var(--color-muted);
-	}
-
-	.empty-icon {
-		font-size: 2.5rem;
-		opacity: 0.5;
 	}
 
 	.delete-btn {

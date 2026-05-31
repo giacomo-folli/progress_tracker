@@ -1,4 +1,5 @@
 import { writable, derived, get } from "svelte/store";
+import { ExerciseType } from "$lib/constants";
 import type { Exercise } from "../types";
 import {
 	loadExercises,
@@ -21,7 +22,7 @@ function createExercisesStore() {
 
 		async completeCurrentStep(exerciseId: string) {
 			const exercise = get(exercises).find((e) => e.id === exerciseId);
-			if (!exercise || exercise.type !== "exercise") return;
+			if (!exercise || exercise.type !== ExerciseType.EXERCISE) return;
 
 			const stepIndex = Number(exercise.current_step_index);
 			const step = exercise?.steps?.find((st) => st.step_index === stepIndex);
@@ -40,7 +41,7 @@ function createExercisesStore() {
 
 		async undoLastCompletion(exerciseId: string) {
 			const exercise = get(exercises).find((e) => e.id === exerciseId);
-			if (!exercise || exercise.type !== "exercise") return;
+			if (!exercise || exercise.type !== ExerciseType.EXERCISE) return;
 
 			const stepIndex = Number(exercise.current_step_index);
 			const step = exercise.steps?.findLast((st) => st.completed);
@@ -73,7 +74,7 @@ function createExercisesStore() {
 		clearProgress() {
 			update((exercises) => {
 				const next = exercises.map((ex) => {
-					if (ex.type !== "exercise") return ex;
+					if (ex.type !== ExerciseType.EXERCISE) return ex;
 					return {
 						...ex,
 						steps: ex.steps?.map((s) => ({
@@ -104,7 +105,7 @@ export const exercises = createExercisesStore();
 
 export const exerciseProgress = derived(exercises, (exs) => {
 	return exs
-		.filter((e) => e.type === "exercise")
+		.filter((e) => e.type === ExerciseType.EXERCISE)
 		.map((ex) => {
 			const total = Number(ex.steps?.length ?? 0);
 			const completedCount = Number(

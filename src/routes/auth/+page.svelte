@@ -199,11 +199,6 @@
 		margin-bottom: 0.6rem;
 	}
 
-	.brand-icon i {
-		font-size: 26px;
-		color: var(--color-accent);
-	}
-
 	.brand-name {
 		margin: 0;
 		font-size: 1.9rem;
@@ -296,10 +291,6 @@
 		display: flex;
 		align-items: center;
 		border-radius: 6px;
-	}
-
-	.eye-btn i {
-		font-size: 17px;
 	}
 
 	/* ── Error ── */

@@ -214,7 +214,7 @@
 	}
 
 	.group--danger {
-		background: #FEE2E2;
+		background: #fee2e2;
 		border: 1px solid rgba(239, 68, 68, 0.25);
 	}
 
@@ -303,7 +303,7 @@
 	}
 
 	.group--danger .row-label {
-		color: #EF4444;
+		color: #ef4444;
 	}
 
 	:global(html.dark) .group--danger .row-label {
@@ -320,44 +320,5 @@
 		color: var(--color-muted);
 		opacity: 0.45;
 		margin-right: -2px;
-	}
-
-	/* Toggle — uses --color-track for off state, accent for on */
-	.toggle {
-		width: 51px;
-		height: 31px;
-		border-radius: 999px;
-		background: var(--color-track);
-		position: relative;
-		cursor: pointer;
-		flex-shrink: 0;
-		padding: 0;
-		border: none;
-		transition: background 0.2s ease;
-	}
-
-	.toggle.on {
-		background: var(--color-accent);
-	}
-
-	.toggle:disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
-	}
-
-	.toggle-thumb {
-		position: absolute;
-		top: 2px;
-		left: 2px;
-		width: 27px;
-		height: 27px;
-		border-radius: 50%;
-		background: var(--color-contrast);
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-		transition: transform 0.2s ease;
-	}
-
-	.toggle.on .toggle-thumb {
-		transform: translateX(20px);
 	}
 </style>

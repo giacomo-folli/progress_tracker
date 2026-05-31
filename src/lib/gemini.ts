@@ -6,6 +6,13 @@
  */
 
 import type { Exercise } from "$lib/types";
+import { DEFAULT_TEMPERATURE } from "$lib/constants";
+import {
+	SUGGEST_EXERCISE_SYSTEM_PROMPT,
+	getSuggestExerciseUserPrompt,
+	getProgressFeedbackPrompt,
+	getWeeklyTipPrompt,
+} from "$lib/constants/prompts";
 
 // ── Client ────────────────────────────────────────────────────────────────────
 
@@ -203,31 +210,8 @@ export async function suggestExercise(
 	goal?: string,
 	currentLevel?: string,
 ): Promise<ExerciseSuggestion | null> {
-	const systemPrompt = `
-You are an expert personal trainer. Design a progressive overload workout plan for the given exercise name, tailoring the steps specifically to the user's starting baseline (current level) and ultimate goal.
-Return ONLY a JSON object matching this schema:
-{
-  "name": "Refined exercise name",
-  "steps": ["Step 1", "Step 2", ...],
-  "rationale": "One-sentence coaching rationale"
-}
-Requirements:
-1. Generate between 3 to 6 steps.
-2. Steps must represent a progression timeline. The first step MUST be at or near their current level / baseline. Each subsequent step must slightly increase the difficulty (e.g. adding weight, reps, sets, or duration) progressively moving towards or achieving the specified goal.
-3. Keep steps extremely concise and measurable. Use this exact format:
-   - "3 sets of 10 reps (40 kg)"
-   - "3 sets of 12 reps (40 kg)"
-   - "3 sets of 10 reps (44 kg)"
-   - Or "3 sets of 1 min (Hold plank)"
-`.trim();
-
-	let userPrompt = `Exercise Name: ${name}`;
-	if (goal) {
-		userPrompt += `\nGoal / Target: ${goal}`;
-	}
-	if (currentLevel) {
-		userPrompt += `\nCurrent Baseline / Level: ${currentLevel}`;
-	}
+	const systemPrompt = SUGGEST_EXERCISE_SYSTEM_PROMPT;
+	const userPrompt = getSuggestExerciseUserPrompt(name, goal, currentLevel);
 
 	try {
 		const raw = await generateText(`${systemPrompt}\n\nUser: ${userPrompt}`, {
@@ -291,13 +275,7 @@ export async function generateProgressFeedback(
 	const pct = total === 0 ? 0 : Math.round((completedCount / total) * 100);
 	const isComplete = completedCount === total;
 
-	const prompt = `
-You are an enthusiastic but concise fitness coach (max 2 sentences).
-Exercise: "${exercise.name}"
-Progress: ${completedCount} of ${total} steps completed (${pct}%).
-${isComplete ? "The user just finished the entire exercise!" : "The user is mid-workout."}
-Write a short motivational message for them.
-`.trim();
+	const prompt = getProgressFeedbackPrompt(exercise.name, completedCount, total, pct, isComplete);
 
 	return generateText(prompt, { temperature: 0.9, maxOutputTokens: 128 });
 }
@@ -310,11 +288,7 @@ export async function generateWeeklyTip(
 ): Promise<string> {
 	const names = exercises.map((e) => e.name).join(", ");
 
-	const prompt = `
-You are a concise personal trainer (max 3 sentences).
-The user regularly trains: ${names}.
-Give them one specific, actionable tip to improve their weekly routine.
-`.trim();
+	const prompt = getWeeklyTipPrompt(names);
 
-	return generateText(prompt, { temperature: 0.7, maxOutputTokens: 256 });
+	return generateText(prompt, { temperature: DEFAULT_TEMPERATURE, maxOutputTokens: 256 });
 }

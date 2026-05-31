@@ -4,6 +4,7 @@
 	import { sessions } from "$lib/stores/sessions";
 	import CelebrationOverlay from "$lib/components/CelebrationOverlay.svelte";
 	import type { Exercise } from "$lib/types";
+	import { ExerciseType } from "$lib/constants";
 	import { goto } from "$app/navigation";
 	import posthog from "posthog-js";
 	import Icon from "$lib/components/Icon.svelte";
@@ -18,7 +19,7 @@
 
 	let quickExercises = $derived(
 		($exercises ?? [])
-			.filter((ex) => ex.type === "quick-exercise")
+			.filter((ex) => ex.type === ExerciseType.QUICK_EXERCISE)
 			.map((ex) => ({
 				...ex,
 				checked: true,
@@ -28,7 +29,7 @@
 	let program = $derived(
 		($exercises ?? [])
 			.filter((ex) => {
-				if (ex.type !== "exercise" || !ex.steps) return false;
+				if (ex.type !== ExerciseType.EXERCISE || !ex.steps) return false;
 				const currentIndex = ex.current_step_index ?? 0;
 				return currentIndex < ex.steps.length;
 			})
@@ -48,10 +49,10 @@
 		let snapshot: Exercise[] = [];
 
 		selectedExercises.forEach((val) => {
-			snapshot.push({ id: val.id, name: val.name, type: "exercise" });
+			snapshot.push({ id: val.id, name: val.name, type: ExerciseType.EXERCISE });
 		});
 		selectedQuick.forEach((val) => {
-			snapshot.push({ id: val.id, name: val.name, type: "quick-exercise" });
+			snapshot.push({ id: val.id, name: val.name, type: ExerciseType.QUICK_EXERCISE });
 		});
 
 		await sessions.logSession(snapshot);
