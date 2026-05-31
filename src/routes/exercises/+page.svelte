@@ -118,6 +118,7 @@
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
+<svelte:body class:no-scroll={showModal} />
 
 <main class="page">
 	<header class="exercises-header">
@@ -412,6 +413,7 @@
 		box-shadow: 0 -2px 24px rgba(0, 0, 0, 0.12);
 		animation: slide-up 0.24s cubic-bezier(0.32, 1.2, 0.6, 1);
 		overflow: hidden;
+		font-size: 16px;
 	}
 
 	@media (min-width: 520px) {
@@ -558,7 +560,7 @@
 		padding: 0.6rem 0.85rem;
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-card);
-		font-size: 0.9rem;
+		font-size: 16px;
 		font-family: inherit;
 		color: var(--color-text);
 		background: var(--color-bg);

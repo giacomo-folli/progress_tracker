@@ -77,6 +77,14 @@ body {
 	overscroll-behavior: none;
 }
 
+body.no-scroll {
+	overflow: hidden;
+}
+
+body.no-scroll .shell.isSignedIn {
+	overflow: hidden;
+}
+
 a {
 	color: inherit;
 	text-decoration: none;

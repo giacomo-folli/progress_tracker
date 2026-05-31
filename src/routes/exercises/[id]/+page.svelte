@@ -94,6 +94,7 @@
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
+<svelte:body class:no-scroll={showDeleteConfirm} />
 
 {#if exercise}
 	<div class="page-layout">
