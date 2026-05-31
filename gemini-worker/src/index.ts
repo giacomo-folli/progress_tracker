@@ -30,11 +30,15 @@ function getCorsHeaders(request: Request): HeadersInit {
 	};
 }
 
-async function retryWithBackoff<T>(
-	fn: () => Promise<T>,
-	maxRetries = 3,
+async function retryWithBackoff<T>({
+	fn,
+	maxRetries = 2,
 	delayMs = 2000,
-): Promise<T> {
+}: {
+	fn: () => Promise<T>;
+	maxRetries?: number;
+	delayMs: number;
+}): Promise<T> {
 	let lastError: any;
 	for (let attempt = 1; attempt <= maxRetries; attempt++) {
 		try {
@@ -276,17 +280,15 @@ export default {
 
 		// ── Standard Non-Streaming Path ───────────────────────────────────────────
 		try {
-			const response = await retryWithBackoff(
-				async () => {
-					return await ai.models.generateContent({
+			const response = await retryWithBackoff({
+				fn: async () =>
+					await ai.models.generateContent({
 						model: "gemini-2.5-flash",
 						contents,
 						config,
-					});
-				},
-				3,
-				3000,
-			);
+					}),
+				delayMs: 3000,
+			});
 
 			return new Response(
 				JSON.stringify({
