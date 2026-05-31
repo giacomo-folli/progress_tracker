@@ -35,8 +35,9 @@
 		left: 0;
 		right: 0;
 		z-index: 50;
-		height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom, 0px));
 		/* padding-bottom: env(safe-area-inset-bottom, 0px); */
+		/* height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom, 0px)); */
+		height: calc(var(--tab-bar-height) + 20px);
 		display: flex;
 		align-items: stretch;
 		justify-content: space-around;
@@ -56,7 +57,7 @@
 		text-decoration: none;
 		color: var(--color-muted);
 		min-height: 44px;
-		padding-top: 10px;
+		padding-top: 2px;
 		transition: color 0.15s ease;
 	}
 
